@@ -5,10 +5,7 @@ def validate_latex(content):
     if content.count("{") != content.count("}"):
         errors.append("Unbalanced braces detected.")
 
-    begin_count = content.count("\\begin{")
-    end_count = content.count("\\end{")
-
-    if begin_count != end_count:
+    if content.count("\\begin{") != content.count("\\end{"):
         errors.append("Environment mismatch detected.")
 
     return errors

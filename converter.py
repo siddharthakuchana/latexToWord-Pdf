@@ -1,27 +1,50 @@
 import pypandoc
 import tempfile
 import os
+from docx2pdf import convert
 
 
-def convert_latex_to_docx(latex_content):
+def convert_latex_to_docx(content):
 
-    with tempfile.NamedTemporaryFile(
-        delete=False,
-        suffix=".tex",
-        mode="w",
-        encoding="utf-8"
-    ) as temp_file:
+    temp_dir = tempfile.mkdtemp()
 
-        temp_file.write(latex_content)
-
-        tex_path = temp_file.name
-
-    output_docx = tex_path.replace(".tex", ".docx")
-
-    pypandoc.convert_file(
-        tex_path,
-        "docx",
-        outputfile=output_docx
+    tex_file = os.path.join(
+        temp_dir,
+        "document.tex"
     )
 
-    return output_docx
+    with open(
+        tex_file,
+        "w",
+        encoding="utf-8"
+    ) as f:
+
+        f.write(content)
+
+    docx_file = os.path.join(
+        temp_dir,
+        "document.docx"
+    )
+
+    pypandoc.convert_file(
+        tex_file,
+        "docx",
+        outputfile=docx_file
+    )
+
+    return docx_file
+
+
+def convert_docx_to_pdf(docx_file):
+
+    pdf_file = docx_file.replace(
+        ".docx",
+        ".pdf"
+    )
+
+    convert(
+        docx_file,
+        pdf_file
+    )
+
+    return pdf_file
