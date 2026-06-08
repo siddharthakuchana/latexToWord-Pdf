@@ -138,7 +138,3 @@ The objective of this project is to simplify document conversion workflows for s
 ## Author
 
 Siddhartha Kuchana
-
-## License
-
-This project is licensed under the MIT License.
