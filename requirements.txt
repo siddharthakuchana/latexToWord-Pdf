@@ -1,3 +1,4 @@
 streamlit
 pypandoc
 docx2pdf
+pypdf

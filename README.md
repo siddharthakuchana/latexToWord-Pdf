@@ -1,140 +1,118 @@
-# LaTeX to Document Converter
+# LaTeX & PDF Processing Suite
 
-A web-based application that converts LaTeX content into editable Microsoft Word documents and optionally exports them as PDF files.
+A comprehensive web-based application that converts LaTeX content into editable Microsoft Word (`.docx`) documents, exports them to PDF, divides multi-page PDF documents into single-page PDF files, and extracts custom page ranges ("from page X to page Y").
+
+---
 
 ## Overview
 
-LaTeX is widely used for creating academic papers, technical reports, research documents, and professional publications. However, many institutions and organizations require documents in Microsoft Word format for editing, collaboration, or submission.
+LaTeX is widely used for creating academic papers, technical reports, research documents, and professional publications. However, working with PDFs and Word documents often requires specialized manipulation tools.
 
-This project provides a simple solution by allowing users to enter LaTeX code directly or upload `.tex` files and generate Word documents with minimal effort. Users can also convert the generated Word document into PDF format.
+This suite provides a unified solution:
+1. **LaTeX to Word & PDF Conversion**: Convert `.tex` code or files to Word (`.docx`) and PDF.
+2. **PDF Page Splitter**: Split any multi-page PDF into individual single-page PDF files (packaged as a `.zip` file for bulk download as well as individual downloads).
+3. **PDF Page Range Extractor**: Extract specific page ranges (e.g. from page 2 to page 5) from any uploaded or generated PDF.
 
-## Features
+---
 
-### Input Options
+## Key Features
 
-* Paste LaTeX code directly into the application
-* Upload `.tex` files
+### 📝 LaTeX Converter Features
+* **Input Methods**: Direct text paste or `.tex` file upload.
+* **Syntax Validation**: Automatic detection of unbalanced braces `{}` and environment mismatches (`\begin` / `\end`).
+* **Document Generation**: Quick conversion to `.docx` format via Pandoc.
+* **PDF Export**: One-click DOCX-to-PDF conversion via `docx2pdf`.
 
-### Validation
+### ✂️ PDF Page Splitting & Range Extraction Features
+* **Divide into Single Pages**: Automatically split a multi-page PDF into individual 1-page PDF files. Download all single-page PDFs in a single `.zip` file or download individual pages.
+* **Extract Page Range**: Select a custom start page ("From Page X") and end page ("To Page Y") to extract a trimmed PDF.
+* **Direct Upload Support**: Split or extract pages from any external `.pdf` file.
+* **Integrated Workflow**: Operates directly on LaTeX-generated PDFs without requiring extra file uploads.
 
-* Detect unbalanced braces
-* Detect LaTeX environment mismatches
-* Display validation warnings before conversion
-
-### Document Generation
-
-* Convert LaTeX content into editable `.docx` files
-* Download generated Word documents instantly
-
-### PDF Export
-
-* Convert generated Word documents into PDF format
-* Download PDF files directly from the application
-
-### User Interface
-
-* Clean and intuitive web interface
-* Fast document generation workflow
-* Easy-to-use conversion process
+---
 
 ## Technology Stack
 
-| Technology | Purpose                   |
-| ---------- | ------------------------- |
-| Python     | Backend Logic             |
-| Streamlit  | Web Application Framework |
-| Pandoc     | LaTeX to DOCX Conversion  |
-| pypandoc   | Python Wrapper for Pandoc |
-| docx2pdf   | DOCX to PDF Conversion    |
+| Technology | Purpose |
+| ---------- | ------- |
+| Python | Backend logic & processing |
+| Streamlit | Modern web application framework |
+| pypdf | PDF page counting, single-page splitting, & page extraction |
+| Pandoc | LaTeX to DOCX conversion |
+| pypandoc | Python wrapper for Pandoc |
+| docx2pdf | DOCX to PDF conversion |
+
+---
 
 ## Project Structure
 
 ```text
-latexCodeConverter/
+latexToWord-Pdf/
 │
-├── app.py
-├── converter.py
-├── validator.py
-├── requirements.txt
-└── README.md
+├── app.py           # Streamlit web application & tabbed UI
+├── converter.py     # LaTeX to DOCX & DOCX to PDF conversion logic
+├── pdf_splitter.py  # PDF page counting, single-page splitting & range extraction
+├── validator.py     # LaTeX syntax validation rules
+├── requirements.txt # Python dependencies (streamlit, pypandoc, docx2pdf, pypdf)
+└── README.md        # Comprehensive documentation
 ```
 
-## Installation
+---
 
-### Clone the Repository
+## Installation & Setup
 
+### 1. Clone the Repository
 ```bash
 git clone https://github.com/YOUR_USERNAME/latexToWord-pdf.git
 cd latexToWord-pdf
 ```
 
-### Install Dependencies
-
+### 2. Install Python Dependencies
 ```bash
 pip install -r requirements.txt
 ```
 
-### Install Pandoc
+### 3. Install Pandoc
+Download and install Pandoc for LaTeX conversion support:
+[https://pandoc.org/installing.html](https://pandoc.org/installing.html)
 
-Download and install Pandoc:
-
-https://pandoc.org/installing.html
-
-Verify installation:
-
+Verify Pandoc installation:
 ```bash
 pandoc --version
 ```
 
-### Microsoft Word Requirement
+### 4. Microsoft Word Requirement (For DOCX to PDF)
+PDF conversion from `.docx` uses `docx2pdf` and requires Microsoft Word installed on Windows. (Note: PDF Splitting and Range Extraction functions use `pypdf` and work standalone on all platforms without Microsoft Word).
 
-PDF conversion uses the `docx2pdf` library and requires Microsoft Word to be installed on Windows.
+---
 
 ## Running the Application
 
+Launch the Streamlit web application:
 ```bash
 streamlit run app.py
 ```
 
-The application will start locally and open in your default web browser.
+The application will open in your default browser (default: `http://localhost:8501`).
 
-## Usage
+---
 
-### Method 1: Paste LaTeX
+## Usage Guide
 
-1. Select **Paste Text**
-2. Enter LaTeX content
-3. Click **Generate DOCX**
-4. Download the generated Word document
+### Tab 1: 📝 LaTeX to Document Converter
+1. Select **Paste Text** or **Upload File** (`.tex`).
+2. Click **Generate DOCX** to create a `.docx` Word document.
+3. Download the `.docx` file or click **Convert DOCX to PDF**.
+4. Once the PDF is generated, use the inline PDF tools to split it into single pages or extract page ranges.
 
-### Method 2: Upload a File
+### Tab 2: ✂️ PDF Page Splitter & Extractor
+1. Upload any multi-page PDF document.
+2. View total page count statistics.
+3. Choose an operation:
+   - **Divide PDF into Single Pages**: Click **Split PDF into Single Pages** to generate individual 1-page PDFs and download the `.zip` archive or individual pages.
+   - **Extract Specific Page Range**: Enter **From Page** and **To Page** numbers, then click **Extract Pages** to download the custom PDF snippet.
 
-1. Select **Upload File**
-2. Upload a `.tex` file
-3. Click **Generate DOCX**
-4. Download the generated document
-
-### Optional PDF Conversion
-
-1. Generate a DOCX file
-2. Click **Convert DOCX to PDF**
-3. Download the PDF document
-
-## Future Enhancements
-
-* Live LaTeX rendering
-* Mathematical equation preview
-* AI-assisted LaTeX error correction
-* Batch document conversion
-* HTML export support
-* Conversion history
-* User authentication
-* Cloud deployment
-
-## Motivation
-
-The objective of this project is to simplify document conversion workflows for students, researchers, educators, and professionals who regularly work with LaTeX documents but need editable Word or PDF versions for sharing and collaboration.
+---
 
 ## Author
-
 Siddhartha Kuchana
