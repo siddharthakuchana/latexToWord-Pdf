@@ -112,7 +112,17 @@ The application will open in your default browser (default: `http://localhost:85
    - **Divide PDF into Single Pages**: Click **Split PDF into Single Pages** to generate individual 1-page PDFs and download the `.zip` archive or individual pages.
    - **Extract Specific Page Range**: Enter **From Page** and **To Page** numbers, then click **Extract Pages** to download the custom PDF snippet.
 
+### Tab 3: 🗜️ Universal File Compressor
+1. Upload any **PDF**, **Image (JPEG, PNG, WEBP, TIFF, BMP)**, or general document.
+2. Select your compression control strategy:
+   - **Target Quality (%)**: Use the synchronized slider or numeric box to adjust quality between 5% and 95%, or pick from quick presets (Extreme, Balanced, High Quality).
+   - **Target File Size (KB / MB)**: Specify exact target file size using the range slider or numeric box. The compression engine iteratively refines image streams and resolution to compress down to your target.
+3. (Optional) For images, convert format to modern WebP or standard JPEG for additional size reduction.
+4. Click **🗜️ Compress File Now**.
+5. Inspect the comparison metrics (Original vs Compressed size, % saved, image side-by-side preview), then download the compressed file.
+
 ---
 
 ## Author
 Siddhartha Kuchana
+

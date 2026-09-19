@@ -1,7 +1,6 @@
-import pypandoc
 import tempfile
 import os
-from docx2pdf import convert
+
 
 
 def convert_latex_to_docx(content):
@@ -26,6 +25,11 @@ def convert_latex_to_docx(content):
         "document.docx"
     )
 
+    try:
+        import pypandoc
+    except ImportError:
+        raise ImportError("pypandoc is required for LaTeX conversion. Please run: pip install pypandoc")
+
     pypandoc.convert_file(
         tex_file,
         "docx",
@@ -36,6 +40,10 @@ def convert_latex_to_docx(content):
 
 
 def convert_docx_to_pdf(docx_file):
+    try:
+        from docx2pdf import convert
+    except ImportError:
+        raise ImportError("docx2pdf is required for DOCX to PDF conversion. Please run: pip install docx2pdf")
 
     pdf_file = docx_file.replace(
         ".docx",
