@@ -22,173 +22,36 @@ from pdf_joiner import (
 
 
 # ==============================================================================
-# PAGE CONFIGURATION & METADATA
+# PAGE CONFIGURATION
 # ==============================================================================
 
 st.set_page_config(
-    page_title="Document, PDF & Compression Suite Pro",
-    page_icon="📑",
+    page_title="Constellation PDF & Document Universe",
+    page_icon="🌌",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
 
 # ==============================================================================
-# ADVANCED CUSTOM CSS & DESIGN SYSTEM
+# FEATURE CONSTANTS & STATE MANAGEMENT
 # ==============================================================================
 
-st.markdown("""
-<style>
-    /* Google Fonts */
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+FEATURE_JOINER = "🌌 PDF Joiner & Merger (Supernova)"
+FEATURE_SPLITTER = "☄️ PDF Page Splitter & Extractor (Comet)"
+FEATURE_COMPRESSOR = "🕳️ Universal File Compressor (Gravity Engine)"
+FEATURE_LATEX = "📜 LaTeX to Document Studio (Celestial Scribe)"
 
-    html, body, [class*="css"] {
-        font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    }
+ALL_FEATURES = [
+    FEATURE_JOINER,
+    FEATURE_SPLITTER,
+    FEATURE_COMPRESSOR,
+    FEATURE_LATEX
+]
 
-    /* Modern Hero Container */
-    .hero-banner {
-        background: linear-gradient(135deg, rgba(37, 99, 235, 0.12) 0%, rgba(124, 58, 237, 0.12) 50%, rgba(236, 72, 153, 0.08) 100%);
-        border: 1px solid rgba(99, 102, 241, 0.25);
-        border-radius: 18px;
-        padding: 24px 30px;
-        margin-bottom: 24px;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
-    }
-
-    .hero-badge {
-        display: inline-block;
-        background: linear-gradient(135deg, #4f46e5, #7c3aed);
-        color: #ffffff;
-        font-size: 0.78rem;
-        font-weight: 700;
-        letter-spacing: 0.05em;
-        text-transform: uppercase;
-        padding: 4px 12px;
-        border-radius: 9999px;
-        margin-bottom: 10px;
-        box-shadow: 0 2px 8px rgba(99, 102, 241, 0.35);
-    }
-
-    .hero-title {
-        font-size: 2.1rem;
-        font-weight: 800;
-        letter-spacing: -0.02em;
-        margin: 0 0 8px 0;
-        background: linear-gradient(135deg, #1e293b 20%, #4338ca 60%, #7c3aed 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-
-    @media (prefers-color-scheme: dark) {
-        .hero-title {
-            background: linear-gradient(135deg, #f8fafc 20%, #a5b4fc 60%, #c084fc 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-    }
-
-    .hero-desc {
-        font-size: 1.02rem;
-        color: #64748b;
-        margin: 0;
-        line-height: 1.5;
-    }
-
-    /* Feature Cards Showcase */
-    .feature-card {
-        border-radius: 14px;
-        padding: 16px 18px;
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid rgba(148, 163, 184, 0.2);
-        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-        position: relative;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-    }
-
-    .feature-card:hover {
-        transform: translateY(-3px);
-        border-color: rgba(99, 102, 241, 0.5);
-        box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.15);
-    }
-
-    .feature-card.active {
-        border-color: #6366f1;
-        background: rgba(99, 102, 241, 0.08);
-        box-shadow: 0 0 0 1.5px #6366f1;
-    }
-
-    .feature-pill-badge {
-        font-size: 0.7rem;
-        font-weight: 700;
-        padding: 2px 8px;
-        border-radius: 8px;
-        display: inline-block;
-        float: right;
-    }
-    .badge-new {
-        background: linear-gradient(135deg, #10b981, #059669);
-        color: white;
-    }
-    .badge-popular {
-        background: linear-gradient(135deg, #3b82f6, #2563eb);
-        color: white;
-    }
-    .badge-smart {
-        background: linear-gradient(135deg, #f59e0b, #d97706);
-        color: white;
-    }
-    .badge-convert {
-        background: linear-gradient(135deg, #8b5cf6, #7c3aed);
-        color: white;
-    }
-
-    /* Queue Item Card */
-    .queue-card {
-        background: rgba(255, 255, 255, 0.04);
-        border: 1px solid rgba(148, 163, 184, 0.2);
-        border-radius: 12px;
-        padding: 12px 16px;
-        margin-bottom: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        transition: all 0.2s ease;
-    }
-    .queue-card:hover {
-        background: rgba(99, 102, 241, 0.05);
-        border-color: rgba(99, 102, 241, 0.35);
-    }
-
-    .file-index-badge {
-        background: #4f46e5;
-        color: #ffffff;
-        font-weight: 700;
-        font-size: 0.82rem;
-        width: 26px;
-        height: 26px;
-        border-radius: 50%;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        margin-right: 12px;
-    }
-
-    /* Clean Streamlit metric polish */
-    div[data-testid="stMetricValue"] {
-        font-weight: 700 !important;
-    }
-</style>
-""", unsafe_allow_html=True)
-
-
-# ==============================================================================
-# SESSION STATE INITIALIZATION
-# ==============================================================================
+# Initialize persistent session state
+if "current_tool" not in st.session_state:
+    st.session_state.current_tool = FEATURE_JOINER
 
 if "docx_file" not in st.session_state:
     st.session_state.docx_file = None
@@ -209,199 +72,388 @@ if "joiner_seen_uids" not in st.session_state:
 if "joiner_result" not in st.session_state:
     st.session_state.joiner_result = None
 
-# Navigation state
-FEATURE_JOINER = "🔗 PDF Joiner & Merger"
-FEATURE_SPLITTER = "✂️ PDF Page Splitter & Extractor"
-FEATURE_COMPRESSOR = "🗜️ Universal File Compressor"
-FEATURE_LATEX = "📝 LaTeX to Document (DOCX & PDF)"
 
-ALL_FEATURES = [
-    FEATURE_JOINER,
-    FEATURE_SPLITTER,
-    FEATURE_COMPRESSOR,
-    FEATURE_LATEX
-]
-
-if "selected_feature" not in st.session_state:
-    st.session_state.selected_feature = FEATURE_JOINER
+# State synchronization callback for tool switching
+def set_active_tool(tool_name):
+    """Safely updates active tool in session state so dropdown & cards stay in sync."""
+    st.session_state.current_tool = tool_name
 
 
 # ==============================================================================
-# SIDEBAR NAVIGATION & TOOL DASHBOARD
+# ADVANCED CONSTELLATION / SPACE THEMED CSS
+# ==============================================================================
+
+st.markdown("""
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap');
+
+    html, body, [class*="css"] {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    /* Cosmic background elements */
+    .stApp {
+        background: radial-gradient(ellipse at 50% -20%, #1e1b4b 0%, #090d21 45%, #030712 100%);
+        color: #f1f5f9;
+    }
+
+    /* Nebula Hero Banner */
+    .cosmic-hero {
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(135deg, rgba(30, 27, 75, 0.75) 0%, rgba(15, 23, 42, 0.85) 50%, rgba(3, 7, 18, 0.95) 100%);
+        border: 1px solid rgba(99, 102, 241, 0.35);
+        border-radius: 20px;
+        padding: 26px 32px;
+        margin-bottom: 22px;
+        box-shadow: 0 0 35px rgba(99, 102, 241, 0.2), inset 0 0 30px rgba(56, 189, 248, 0.05);
+        backdrop-filter: blur(14px);
+    }
+
+    .stardust-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.4), rgba(168, 85, 247, 0.3));
+        border: 1px solid rgba(168, 85, 247, 0.5);
+        color: #c084fc;
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        padding: 4px 14px;
+        border-radius: 9999px;
+        margin-bottom: 12px;
+        box-shadow: 0 0 15px rgba(168, 85, 247, 0.3);
+    }
+
+    .cosmic-title {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 2.3rem;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        margin: 0 0 8px 0;
+        background: linear-gradient(135deg, #ffffff 15%, #c7d2fe 45%, #38bdf8 80%, #ec4899 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .cosmic-subtitle {
+        font-size: 1.02rem;
+        color: #94a3b8;
+        line-height: 1.55;
+        margin: 0;
+    }
+
+    /* Constellation Card Styling */
+    .constellation-card {
+        border-radius: 16px;
+        padding: 16px 18px;
+        background: rgba(15, 23, 42, 0.65);
+        border: 1px solid rgba(99, 102, 241, 0.25);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(12px);
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        margin-bottom: 10px;
+    }
+
+    .constellation-card:hover {
+        transform: translateY(-3px);
+        border-color: rgba(56, 189, 248, 0.6);
+        box-shadow: 0 0 25px rgba(56, 189, 248, 0.25);
+    }
+
+    .constellation-card.orbiting {
+        border: 1.5px solid #38bdf8 !important;
+        background: linear-gradient(145deg, rgba(30, 27, 75, 0.8), rgba(15, 23, 42, 0.9)) !important;
+        box-shadow: 0 0 30px rgba(56, 189, 248, 0.4), inset 0 0 15px rgba(99, 102, 241, 0.3) !important;
+    }
+
+    /* Cosmic Chips */
+    .cosmic-badge {
+        font-size: 0.68rem;
+        font-weight: 700;
+        padding: 3px 8px;
+        border-radius: 6px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        float: right;
+    }
+    .badge-supernova {
+        background: rgba(16, 185, 129, 0.2);
+        color: #34d399;
+        border: 1px solid rgba(52, 211, 153, 0.4);
+    }
+    .badge-comet {
+        background: rgba(56, 189, 248, 0.2);
+        color: #38bdf8;
+        border: 1px solid rgba(56, 189, 248, 0.4);
+    }
+    .badge-gravity {
+        background: rgba(245, 158, 11, 0.2);
+        color: #fbbf24;
+        border: 1px solid rgba(251, 191, 36, 0.4);
+    }
+    .badge-scribe {
+        background: rgba(168, 85, 247, 0.2);
+        color: #c084fc;
+        border: 1px solid rgba(192, 132, 252, 0.4);
+    }
+
+    /* Mission Control Dropdown Box */
+    .mission-control-box {
+        background: linear-gradient(135deg, rgba(30, 27, 75, 0.4) 0%, rgba(15, 23, 42, 0.6) 100%);
+        border: 1px solid rgba(56, 189, 248, 0.35);
+        border-radius: 16px;
+        padding: 16px 20px;
+        margin: 16px 0 24px 0;
+        box-shadow: 0 0 20px rgba(56, 189, 248, 0.12);
+    }
+
+    /* Streamlit Containers Border Theme */
+    [data-testid="stVerticalBlockBorderWrapper"] {
+        border-color: rgba(99, 102, 241, 0.25) !important;
+        background: rgba(15, 23, 42, 0.45) !important;
+        border-radius: 14px !important;
+        backdrop-filter: blur(10px) !important;
+    }
+
+    /* Buttons with Celestial Glow */
+    button[kind="primary"] {
+        background: linear-gradient(135deg, #4f46e5 0%, #0284c7 100%) !important;
+        border: 1px solid #38bdf8 !important;
+        color: #ffffff !important;
+        font-weight: 600 !important;
+        box-shadow: 0 0 16px rgba(56, 189, 248, 0.35) !important;
+        transition: all 0.2s ease !important;
+    }
+    button[kind="primary"]:hover {
+        box-shadow: 0 0 24px rgba(56, 189, 248, 0.6) !important;
+        transform: translateY(-1px) !important;
+    }
+
+    /* Metric Values */
+    div[data-testid="stMetricValue"] {
+        font-family: 'Space Grotesk', sans-serif !important;
+        color: #38bdf8 !important;
+        font-weight: 700 !important;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+
+# ==============================================================================
+# CELESTIAL HERO BANNER
+# ==============================================================================
+
+st.markdown("""
+<div class="cosmic-hero">
+    <div class="stardust-badge">🌌 Deep Space Document Constellation</div>
+    <div class="cosmic-title">Constellation Document & PDF Studio</div>
+    <div class="cosmic-subtitle">
+        Explore a galaxy of high-precision document engines: <strong>Join & merge multiple PDFs</strong>, 
+        <strong>split & extract orbital page slices</strong>, <strong>compress files to targeted mass</strong>, 
+        and <strong>transcribe LaTeX into Word & PDF</strong>.
+    </div>
+</div>
+""", unsafe_allow_html=True)
+
+
+# ==============================================================================
+# CONSTELLATION CARDS HUB (VISUAL TOOL SHOWCASE)
+# ==============================================================================
+
+st.markdown("### 🔭 Constellation Hub — All Available Missions")
+st.caption("Click any mission card or use the Mission Control dropdown below to switch tools seamlessly.")
+
+hub_c1, hub_c2, hub_c3, hub_c4 = st.columns(4)
+
+# Mission 1: PDF Joiner
+with hub_c1:
+    is_active_joiner = (st.session_state.current_tool == FEATURE_JOINER)
+    card_cls = "constellation-card orbiting" if is_active_joiner else "constellation-card"
+    st.markdown(f"""
+    <div class="{card_cls}">
+        <span class="cosmic-badge badge-supernova">NEW MISSION</span>
+        <h4 style="margin: 4px 0 6px 0; color: #f8fafc;">🌌 PDF Joiner</h4>
+        <p style="font-size: 0.83rem; color: #94a3b8; margin: 0 0 10px 0; min-height: 48px;">
+            Join 2+ PDFs in custom sequence with interactive reordering and table of contents.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+    st.button(
+        "🪐 Current Orbit" if is_active_joiner else "⚡ Engage Joiner",
+        key="btn_hub_joiner",
+        type="primary" if is_active_joiner else "secondary",
+        use_container_width=True,
+        on_click=set_active_tool,
+        args=(FEATURE_JOINER,)
+    )
+
+# Mission 2: PDF Splitter
+with hub_c2:
+    is_active_splitter = (st.session_state.current_tool == FEATURE_SPLITTER)
+    card_cls = "constellation-card orbiting" if is_active_splitter else "constellation-card"
+    st.markdown(f"""
+    <div class="{card_cls}">
+        <span class="cosmic-badge badge-comet">ORBITAL</span>
+        <h4 style="margin: 4px 0 6px 0; color: #f8fafc;">☄️ PDF Splitter</h4>
+        <p style="font-size: 0.83rem; color: #94a3b8; margin: 0 0 10px 0; min-height: 48px;">
+            Divide PDFs into single-page stars (ZIP) or extract custom page intervals.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+    st.button(
+        "🪐 Current Orbit" if is_active_splitter else "⚡ Engage Splitter",
+        key="btn_hub_splitter",
+        type="primary" if is_active_splitter else "secondary",
+        use_container_width=True,
+        on_click=set_active_tool,
+        args=(FEATURE_SPLITTER,)
+    )
+
+# Mission 3: Universal Compressor
+with hub_c3:
+    is_active_comp = (st.session_state.current_tool == FEATURE_COMPRESSOR)
+    card_cls = "constellation-card orbiting" if is_active_comp else "constellation-card"
+    st.markdown(f"""
+    <div class="{card_cls}">
+        <span class="cosmic-badge badge-gravity">MASS CRUSH</span>
+        <h4 style="margin: 4px 0 6px 0; color: #f8fafc;">🕳️ Compressor</h4>
+        <p style="font-size: 0.83rem; color: #94a3b8; margin: 0 0 10px 0; min-height: 48px;">
+            Compress PDFs & images to exact target KB/MB or adjustable quality sliders.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+    st.button(
+        "🪐 Current Orbit" if is_active_comp else "⚡ Engage Compressor",
+        key="btn_hub_comp",
+        type="primary" if is_active_comp else "secondary",
+        use_container_width=True,
+        on_click=set_active_tool,
+        args=(FEATURE_COMPRESSOR,)
+    )
+
+# Mission 4: LaTeX Converter
+with hub_c4:
+    is_active_latex = (st.session_state.current_tool == FEATURE_LATEX)
+    card_cls = "constellation-card orbiting" if is_active_latex else "constellation-card"
+    st.markdown(f"""
+    <div class="{card_cls}">
+        <span class="cosmic-badge badge-scribe">DOCX/PDF</span>
+        <h4 style="margin: 4px 0 6px 0; color: #f8fafc;">📜 LaTeX Scribe</h4>
+        <p style="font-size: 0.83rem; color: #94a3b8; margin: 0 0 10px 0; min-height: 48px;">
+            Convert raw LaTeX code or .tex files into editable Word and publication PDFs.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+    st.button(
+        "🪐 Current Orbit" if is_active_latex else "⚡ Engage Scribe",
+        key="btn_hub_latex",
+        type="primary" if is_active_latex else "secondary",
+        use_container_width=True,
+        on_click=set_active_tool,
+        args=(FEATURE_LATEX,)
+    )
+
+
+# ==============================================================================
+# PROPER MISSION CONTROL DROPDOWN
+# ==============================================================================
+
+st.markdown("""
+<div class="mission-control-box">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+        <span style="font-family: 'Space Grotesk', sans-serif; font-size: 1rem; font-weight: 700; color: #38bdf8; display: flex; align-items: center; gap: 8px;">
+            🛰️ Active Mission Selector Dropdown
+        </span>
+        <span style="font-size: 0.75rem; color: #94a3b8;">
+            Synchronized with Constellation Cards
+        </span>
+    </div>
+</div>
+""", unsafe_allow_html=True)
+
+# Clean, single-source-of-truth selectbox dropdown
+active_tool_selection = st.selectbox(
+    "Select Active Mission Tool:",
+    options=ALL_FEATURES,
+    key="current_tool",
+    label_visibility="collapsed"
+)
+
+
+# ==============================================================================
+# SIDEBAR TELEMETRY & CONTROLS
 # ==============================================================================
 
 with st.sidebar:
-    st.markdown("### 🛠️ PDF & Doc Studio Pro")
-    st.caption("Select a tool below or use the Feature Hub on the dashboard.")
+    st.markdown("### 🌌 Mission Telemetry")
+    st.caption("Orbital navigation & status")
 
-    # Synchronized feature navigation in sidebar
-    chosen_sidebar_feature = st.radio(
-        "Active Tool",
-        options=ALL_FEATURES,
-        index=ALL_FEATURES.index(st.session_state.selected_feature),
-        key="sidebar_feature_radio",
-        label_visibility="collapsed"
-    )
-
-    if chosen_sidebar_feature != st.session_state.selected_feature:
-        st.session_state.selected_feature = chosen_sidebar_feature
-        st.rerun()
+    st.info(f"**Engaged Tool**:\n{st.session_state.current_tool}")
 
     st.markdown("---")
-
-    # Quick Feature Status
-    st.markdown("#### 📊 Current Session Status")
-    if st.session_state.selected_feature == FEATURE_JOINER:
-        q_count = len(st.session_state.joiner_queue)
-        st.info(f"**PDF Joiner Queue**: {q_count} file(s) ready")
-    elif st.session_state.selected_feature == FEATURE_SPLITTER:
-        st.info("**Splitter Status**: Ready for multi-page PDF")
-    elif st.session_state.selected_feature == FEATURE_COMPRESSOR:
-        comp_status = "Result Cached" if st.session_state.compression_result else "Idle"
-        st.info(f"**Compressor**: {comp_status}")
-    elif st.session_state.selected_feature == FEATURE_LATEX:
-        docx_status = "Generated" if st.session_state.docx_file else "None"
-        st.info(f"**LaTeX DOCX**: {docx_status}")
+    st.markdown("#### 🚀 Quick Mission Switcher")
+    for feat in ALL_FEATURES:
+        is_cur = (st.session_state.current_tool == feat)
+        st.button(
+            f"{'🌟' if is_cur else '🛸'} {feat.split('(')[0].strip()}",
+            key=f"sidebar_btn_{feat[:10]}",
+            type="primary" if is_cur else "secondary",
+            use_container_width=True,
+            on_click=set_active_tool,
+            args=(feat,)
+        )
 
     st.markdown("---")
-    st.markdown("#### 💡 Quick Features Guide")
-    st.markdown("""
-    - **🔗 PDF Joiner**: Merge multiple PDFs in any custom order with instant table of contents.
-    - **✂️ PDF Splitter**: Explode pages into a zip or trim custom page ranges.
-    - **🗜️ Compressor**: Shrink PDFs & images to target KB/MB or quality percentage.
-    - **📝 LaTeX Suite**: Convert LaTeX text/.tex into Word `.docx` and `.pdf`.
-    """)
+    st.markdown("#### 📡 System Status")
+    if st.session_state.current_tool == FEATURE_JOINER:
+        st.write(f"📁 Queue: **{len(st.session_state.joiner_queue)} document(s)**")
+    elif st.session_state.current_tool == FEATURE_COMPRESSOR:
+        status_c = "Cached" if st.session_state.compression_result else "Idle"
+        st.write(f"🗜️ Engine: **{status_c}**")
+    elif st.session_state.current_tool == FEATURE_LATEX:
+        status_l = "Generated" if st.session_state.docx_file else "Idle"
+        st.write(f"📝 DOCX: **{status_l}**")
+    else:
+        st.write("✂️ Splitter: **Awaiting Source**")
 
     st.markdown("---")
-    if st.button("🧹 Clear All Session Caches", use_container_width=True):
+    if st.button("🧹 Reset All Space Caches", use_container_width=True):
         st.session_state.docx_file = None
         st.session_state.pdf_file = None
         st.session_state.compression_result = None
         st.session_state.joiner_queue = []
         st.session_state.joiner_seen_uids = set()
         st.session_state.joiner_result = None
-        st.success("Session reset!")
+        st.success("Caches purged!")
         st.rerun()
-
-
-# ==============================================================================
-# TOP HERO HEADER & INTERACTIVE FEATURE HUB
-# ==============================================================================
-
-st.markdown("""
-<div class="hero-banner">
-    <div class="hero-badge">✨ Multi-Tool Document Suite Pro</div>
-    <div class="hero-title">Document, PDF & Compression Studio</div>
-    <div class="hero-desc">
-        A unified powerhouse to <strong>join multi-page PDFs</strong>, <strong>split & extract page ranges</strong>, <strong>compress files to target sizes</strong>, and <strong>convert LaTeX to Word & PDF</strong>.
-    </div>
-</div>
-""", unsafe_allow_html=True)
-
-# ------------------------------------------------------------------------------
-# INTERACTIVE FEATURE HUB: VISUAL CARDS
-# ------------------------------------------------------------------------------
-
-st.markdown("### 🧭 All Features Hub — Select a Tool")
-hub_cols = st.columns(4)
-
-# Feature 1 Card: PDF Joiner
-with hub_cols[0]:
-    is_active = (st.session_state.selected_feature == FEATURE_JOINER)
-    with st.container(border=True):
-        st.markdown('**🔗 PDF Joiner** <span class="feature-pill-badge badge-new">NEW</span>', unsafe_allow_html=True)
-        st.caption("Combine 2 or more PDFs into a single file with custom order and bookmarks.")
-        if st.button(
-            "👉 Select Joiner" if not is_active else "✅ Active Tool",
-            key="hub_btn_joiner",
-            type="primary" if is_active else "secondary",
-            use_container_width=True
-        ):
-            st.session_state.selected_feature = FEATURE_JOINER
-            st.rerun()
-
-# Feature 2 Card: PDF Splitter
-with hub_cols[1]:
-    is_active = (st.session_state.selected_feature == FEATURE_SPLITTER)
-    with st.container(border=True):
-        st.markdown('**✂️ PDF Splitter** <span class="feature-pill-badge badge-popular">POPULAR</span>', unsafe_allow_html=True)
-        st.caption("Divide multi-page PDFs into single pages or extract custom page ranges.")
-        if st.button(
-            "👉 Select Splitter" if not is_active else "✅ Active Tool",
-            key="hub_btn_splitter",
-            type="primary" if is_active else "secondary",
-            use_container_width=True
-        ):
-            st.session_state.selected_feature = FEATURE_SPLITTER
-            st.rerun()
-
-# Feature 3 Card: Universal Compressor
-with hub_cols[2]:
-    is_active = (st.session_state.selected_feature == FEATURE_COMPRESSOR)
-    with st.container(border=True):
-        st.markdown('**🗜️ File Compressor** <span class="feature-pill-badge badge-smart">SMART</span>', unsafe_allow_html=True)
-        st.caption("Compress PDFs and images to exact target KB/MB or adjustable quality.")
-        if st.button(
-            "👉 Select Compressor" if not is_active else "✅ Active Tool",
-            key="hub_btn_compressor",
-            type="primary" if is_active else "secondary",
-            use_container_width=True
-        ):
-            st.session_state.selected_feature = FEATURE_COMPRESSOR
-            st.rerun()
-
-# Feature 4 Card: LaTeX Converter
-with hub_cols[3]:
-    is_active = (st.session_state.selected_feature == FEATURE_LATEX)
-    with st.container(border=True):
-        st.markdown('**📝 LaTeX Converter** <span class="feature-pill-badge badge-convert">DOCX/PDF</span>', unsafe_allow_html=True)
-        st.caption("Convert LaTeX text and `.tex` files into editable DOCX and clean PDFs.")
-        if st.button(
-            "👉 Select LaTeX" if not is_active else "✅ Active Tool",
-            key="hub_btn_latex",
-            type="primary" if is_active else "secondary",
-            use_container_width=True
-        ):
-            st.session_state.selected_feature = FEATURE_LATEX
-            st.rerun()
-
-# Segmented control selector
-selected_segment = st.segmented_control(
-    "Tool Selector",
-    options=ALL_FEATURES,
-    default=st.session_state.selected_feature,
-    selection_mode="single",
-    label_visibility="collapsed"
-)
-
-if selected_segment and selected_segment != st.session_state.selected_feature:
-    st.session_state.selected_feature = selected_segment
-    st.rerun()
 
 st.markdown("---")
 
 
 # ==============================================================================
-# FEATURE 1: 🔗 MULTI-PDF JOINER & MERGER [NEW FEATURE]
+# MISSION 1: 🌌 MULTI-PDF JOINER & MERGER
 # ==============================================================================
 
-if st.session_state.selected_feature == FEATURE_JOINER:
-    st.header("🔗 Multi-PDF File Joiner & Merger")
+if st.session_state.current_tool == FEATURE_JOINER:
+    st.header("🌌 Multi-PDF Joiner & Document Merger")
     st.markdown(
-        "Upload **two or more PDF files**, arrange them in your preferred reading sequence, "
-        "and merge them into a single consolidated PDF document with optional interactive bookmarks."
+        "Select and combine **two or more PDF documents** into a single continuous file. "
+        "Freely adjust document sequence with orbital controls, inspect pages, and generate automatic outline bookmarks."
     )
 
-    # File Uploader
+    # Multi-file uploader
     uploaded_join_files = st.file_uploader(
         "Select Multiple PDF Files to Join",
         type=["pdf"],
         accept_multiple_files=True,
         key="pdf_joiner_uploader",
-        help="You can drag & drop or select multiple PDF files at once."
+        help="Drag and drop or select multiple PDF files from your cosmos."
     )
 
-    # Process uploads into the persistent queue
     if uploaded_join_files:
         for f in uploaded_join_files:
             uid = f"{f.name}_{f.size}"
@@ -422,69 +474,67 @@ if st.session_state.selected_feature == FEATURE_JOINER:
     queue = st.session_state.joiner_queue
 
     if not queue:
-        st.info("👆 Please upload **2 or more PDF files** above to start joining.")
+        st.info("🛰️ Ready for documents. Upload **2 or more PDF files** above to launch the joiner.")
     else:
-        # Overview Metrics
         total_q_files = len(queue)
         total_q_pages = sum(item["pages"] for item in queue if item["valid"])
         total_q_size = sum(item["size_bytes"] for item in queue)
 
-        m_c1, m_c2, m_c3, m_c4 = st.columns(4)
-        with m_c1:
-            st.metric("📁 Files in Queue", f"{total_q_files} PDF{'s' if total_q_files > 1 else ''}")
-        with m_c2:
-            st.metric("📄 Total Page Count", f"{total_q_pages} pages")
-        with m_c3:
-            st.metric("📦 Combined Size", format_size(total_q_size))
-        with m_c4:
-            valid_count = sum(1 for item in queue if item["valid"])
-            st.metric("✅ Status", f"{valid_count}/{total_q_files} Valid")
+        # Overview telemetry metrics
+        with st.container(border=True):
+            m_c1, m_c2, m_c3, m_c4 = st.columns(4)
+            with m_c1:
+                st.metric("📁 Documents in Queue", f"{total_q_files} PDFs")
+            with m_c2:
+                st.metric("📄 Combined Page Mass", f"{total_q_pages} pages")
+            with m_c3:
+                st.metric("📦 Cumulative Size", format_size(total_q_size))
+            with m_c4:
+                valid_count = sum(1 for item in queue if item["valid"])
+                st.metric("⚡ Status", f"{valid_count}/{total_q_files} Valid")
 
-        st.markdown("---")
+        st.markdown("### 📋 Document Merge Sequence")
+        st.caption("Use the ⬆️ Up and ⬇️ Down thrusters to position documents in your preferred reading order.")
 
-        # Document Sequence & Reordering Queue
-        st.subheader("📋 Document Merge Sequence")
-        st.caption("Reorder files using the ⬆️ and ⬇️ buttons so they merge in your exact desired order.")
-
-        # Reorder actions
+        # Interactive document queue cards
         for idx, item in enumerate(queue):
             with st.container(border=True):
-                col_order, col_info, col_up, col_down, col_del = st.columns([1, 6, 1.2, 1.2, 1.2])
+                col_ord, col_det, col_up, col_dn, col_rm = st.columns([1, 6, 1.2, 1.2, 1.2])
 
-                with col_order:
-                    st.markdown(f"### `#{idx + 1}`")
+                with col_ord:
+                    st.markdown(f"#### `#{idx + 1}`")
 
-                with col_info:
+                with col_det:
                     st.markdown(f"**📄 {item['filename']}**")
                     if item["valid"]:
                         st.caption(f"Pages: **{item['pages']}** | Size: **{format_size(item['size_bytes'])}**")
                     else:
-                        st.error(f"⚠️ Error: {item['error']}")
+                        st.error(f"⚠️ Inspection Error: {item['error']}")
 
                 with col_up:
                     if st.button("⬆️ Up", key=f"btn_up_{idx}", disabled=(idx == 0), use_container_width=True):
                         queue[idx], queue[idx - 1] = queue[idx - 1], queue[idx]
                         st.rerun()
 
-                with col_down:
+                with col_dn:
                     if st.button("⬇️ Down", key=f"btn_down_{idx}", disabled=(idx == len(queue) - 1), use_container_width=True):
                         queue[idx], queue[idx + 1] = queue[idx + 1], queue[idx]
                         st.rerun()
 
-                with col_del:
+                with col_rm:
                     if st.button("❌ Remove", key=f"btn_del_{idx}", use_container_width=True):
                         removed = queue.pop(idx)
                         st.session_state.joiner_seen_uids.discard(removed["uid"])
                         st.session_state.joiner_result = None
                         st.rerun()
 
-        # Bulk Queue Operations
-        b_col1, b_col2, _ = st.columns([2, 2, 4])
-        with b_col1:
-            if st.button("🔄 Reverse Order", use_container_width=True):
+        # Bulk actions
+        ba1, ba2, _ = st.columns([2, 2, 4])
+        with ba1:
+            if st.button("🔄 Reverse Document Order", use_container_width=True):
                 queue.reverse()
                 st.rerun()
-        with b_col2:
+        with ba2:
             if st.button("🗑️ Clear Entire Queue", use_container_width=True):
                 st.session_state.joiner_queue = []
                 st.session_state.joiner_seen_uids.clear()
@@ -493,64 +543,63 @@ if st.session_state.selected_feature == FEATURE_JOINER:
 
         st.markdown("---")
 
-        # Merge Settings
+        # Merge Configuration
         st.subheader("⚙️ Merge Settings")
         with st.container(border=True):
-            set_col1, set_col2 = st.columns(2)
-            with set_col1:
+            s1, s2 = st.columns(2)
+            with s1:
                 custom_merge_filename = st.text_input(
-                    "Output PDF Filename",
+                    "Consolidated Output Filename",
                     value="merged_document.pdf",
-                    help="Filename for the downloaded combined document."
+                    help="Name for the resulting joined PDF file."
                 )
-            with set_col2:
+            with s2:
                 add_toc_bookmarks = st.checkbox(
-                    "📑 Add Document Bookmarks / Table of Contents",
+                    "📑 Generate Constellation Outline (Bookmarks)",
                     value=True,
-                    help="Adds outline entries in the PDF viewer so readers can jump directly to each document."
+                    help="Generates an outline table of contents so readers can navigate to each document."
                 )
 
-        # Merge Execution Button
+        # Merge Action Button
         if len(queue) < 2:
-            st.warning("⚠️ You need at least **2 PDF files** in the queue to perform a merge.")
+            st.warning("⚠️ At least **2 PDF documents** are required in the queue to perform a merge.")
         else:
             if st.button("🚀 Merge All PDFs Now", type="primary", use_container_width=True):
                 try:
-                    with st.spinner(f"Joining {len(queue)} PDF files into '{custom_merge_filename}'..."):
+                    with st.spinner(f"Synthesizing {len(queue)} PDFs into '{custom_merge_filename}'..."):
                         merge_res = merge_pdfs(
                             pdf_items=queue,
                             output_filename=custom_merge_filename,
                             add_bookmarks=add_toc_bookmarks
                         )
                         st.session_state.joiner_result = merge_res
-                    st.success(f"🎉 Successfully merged {merge_res['total_files']} PDFs into a single {merge_res['total_pages']}-page document!")
+                    st.success(f"🎉 Successfully merged {merge_res['total_files']} PDFs into {merge_res['total_pages']} pages!")
                 except Exception as e:
                     st.error(f"Merge operation failed: {e}")
 
-        # Display Merge Results & Download
+        # Display Merge Results
         if st.session_state.joiner_result is not None:
             res = st.session_state.joiner_result
             st.markdown("---")
-            st.subheader("🎉 Merged Document Ready")
+            st.subheader("🎉 Merged Document Ready for Download")
 
             with st.container(border=True):
-                res_c1, res_c2, res_c3 = st.columns(3)
-                with res_c1:
-                    st.metric("Total Documents Joined", f"{res['total_files']} files")
-                with res_c2:
-                    st.metric("Total Combined Pages", f"{res['total_pages']} pages")
-                with res_c3:
+                r1, r2, r3 = st.columns(3)
+                with r1:
+                    st.metric("Documents Joined", f"{res['total_files']} files")
+                with r2:
+                    st.metric("Total Page Count", f"{res['total_pages']} pages")
+                with r3:
                     st.metric("Final Output Size", format_size(res["total_size_bytes"]))
 
-                # Page Range Index Table
-                with st.expander("📑 View Page Breakdown by Document", expanded=True):
+                with st.expander("📑 View Page Breakdown Matrix", expanded=True):
                     for item in res["file_breakdown"]:
-                        col_idx_b, col_fname_b, col_range_b = st.columns([1, 6, 3])
-                        with col_idx_b:
+                        b_col1, b_col2, b_col3 = st.columns([1, 6, 3])
+                        with b_col1:
                             st.write(f"**#{item['order']}**")
-                        with col_fname_b:
+                        with b_col2:
                             st.write(f"📄 {item['filename']}")
-                        with col_range_b:
+                        with b_col3:
                             st.write(f"Pages **{item['start_page']}** – **{item['end_page']}** ({item['pages']} pages)")
 
                 st.download_button(
@@ -564,13 +613,13 @@ if st.session_state.selected_feature == FEATURE_JOINER:
 
 
 # ==============================================================================
-# FEATURE 2: ✂️ PDF PAGE SPLITTER & EXTRACTOR
+# MISSION 2: ☄️ PDF PAGE SPLITTER & EXTRACTOR
 # ==============================================================================
 
-elif st.session_state.selected_feature == FEATURE_SPLITTER:
-    st.header("✂️ PDF Page Splitter & Range Extractor")
+elif st.session_state.current_tool == FEATURE_SPLITTER:
+    st.header("☄️ PDF Page Splitter & Orbital Extractor")
     st.markdown(
-        "Upload any multi-page PDF document to divide it into single-page PDFs or extract a specific range of pages (from page X to page Y)."
+        "Upload any multi-page PDF document to explode it into single-page PDFs or extract a specific page interval."
     )
 
     uploaded_pdf = st.file_uploader(
@@ -592,18 +641,17 @@ elif st.session_state.selected_feature == FEATURE_SPLITTER:
                 m2.metric("📄 Total Page Count", f"{total_pages} pages")
 
             operation = st.radio(
-                "Choose PDF Action:",
+                "Choose Splitting Trajectory:",
                 ["Divide PDF into Single Pages", "Extract Specific Page Range (From Page X to Y)"],
                 horizontal=True
             )
 
-            # OPERATION 1: DIVIDE INTO SINGLE PAGES
             if operation == "Divide PDF into Single Pages":
-                st.subheader("1. Single Page Splitter")
-                st.write(f"This will split the **{total_pages}-page** PDF into **{total_pages} separate single-page PDF files**.")
+                st.subheader("1. Single Page Exploder")
+                st.write(f"This will split the **{total_pages}-page** PDF into **{total_pages} individual single-page PDF documents**.")
 
                 if st.button("✂️ Split PDF into Single Pages", type="primary", use_container_width=True):
-                    with st.spinner("Splitting PDF pages..."):
+                    with st.spinner("Splitting orbital pages..."):
                         split_res = split_pdf_to_single_pages(pdf_bytes, base_filename=pdf_name)
 
                     st.success(f"Successfully divided into {total_pages} single-page PDFs!")
@@ -630,10 +678,9 @@ elif st.session_state.selected_feature == FEATURE_SPLITTER:
                                 key=f"btn_page_{page_info['page_number']}"
                             )
 
-            # OPERATION 2: EXTRACT SPECIFIC PAGE RANGE
             elif operation == "Extract Specific Page Range (From Page X to Y)":
                 st.subheader("2. Page Range Extractor")
-                st.write("Specify page range boundaries to extract into a single continuous PDF document.")
+                st.write("Specify orbital start and end boundaries to extract a continuous PDF slice.")
 
                 col_from, col_to = st.columns(2)
                 with col_from:
@@ -643,7 +690,7 @@ elif st.session_state.selected_feature == FEATURE_SPLITTER:
                         max_value=total_pages,
                         value=1,
                         step=1,
-                        help="First page to include in extraction"
+                        help="First page of slice"
                     )
 
                 with col_to:
@@ -653,14 +700,14 @@ elif st.session_state.selected_feature == FEATURE_SPLITTER:
                         max_value=total_pages,
                         value=total_pages,
                         step=1,
-                        help="Last page to include in extraction"
+                        help="Last page of slice"
                     )
 
                 if from_page > to_page:
                     st.error("⚠️ Invalid range: 'From Page' must be less than or equal to 'To Page'.")
                 else:
                     selected_count = to_page - from_page + 1
-                    st.info(f"Extracting **{selected_count} page(s)** (Page {from_page} through Page {to_page} out of {total_pages} total pages).")
+                    st.info(f"Extracting **{selected_count} page(s)** (Page {from_page} through Page {to_page} of {total_pages} total).")
 
                     if st.button(f"✂️ Extract Pages {from_page} to {to_page}", type="primary", use_container_width=True):
                         with st.spinner(f"Extracting pages {from_page} to {to_page}..."):
@@ -686,13 +733,13 @@ elif st.session_state.selected_feature == FEATURE_SPLITTER:
 
 
 # ==============================================================================
-# FEATURE 3: 🗜️ UNIVERSAL FILE COMPRESSOR
+# MISSION 3: 🕳️ UNIVERSAL FILE COMPRESSOR
 # ==============================================================================
 
-elif st.session_state.selected_feature == FEATURE_COMPRESSOR:
-    st.header("🗜️ Universal File Compressor")
+elif st.session_state.current_tool == FEATURE_COMPRESSOR:
+    st.header("🕳️ Universal File Compressor (Gravity Engine)")
     st.markdown(
-        "Compress **PDFs, Images (JPEG, PNG, WEBP, TIFF, BMP)**, or documents to any target file size or quality level using interactive sliders and range boxes."
+        "Compress **PDFs, Images (JPEG, PNG, WEBP, TIFF, BMP)**, or documents to any target mass (KB / MB) or visual fidelity level."
     )
 
     uploaded_comp_file = st.file_uploader(
@@ -707,7 +754,6 @@ elif st.session_state.selected_feature == FEATURE_COMPRESSOR:
         orig_size_kb = max(1.0, orig_size_bytes / 1024.0)
         orig_size_mb = orig_size_kb / 1024.0
 
-        # File Overview Cards
         with st.container(border=True):
             info_col1, info_col2, info_col3 = st.columns(3)
             with info_col1:
@@ -719,10 +765,10 @@ elif st.session_state.selected_feature == FEATURE_COMPRESSOR:
                 st.metric("🏷️ Detected Format", file_ext if file_ext else "UNKNOWN")
 
         st.markdown("---")
-        st.subheader("⚙️ Compression Settings & Controls")
+        st.subheader("⚙️ Gravity Compression Controls")
 
         mode = st.radio(
-            "Select Compression Mode:",
+            "Select Compression Strategy:",
             ["Target Quality (%)", "Target File Size (KB / MB)"],
             horizontal=True,
             key="comp_mode_selector"
@@ -732,7 +778,7 @@ elif st.session_state.selected_feature == FEATURE_COMPRESSOR:
         target_size_kb_arg = None
 
         if mode == "Target Quality (%)":
-            st.markdown("##### Adjust Compression Quality (Slider & Numeric Box)")
+            st.markdown("##### Adjust Compression Quality")
             st.caption("Lower quality achieves maximum compression; higher quality preserves fine detail.")
 
             # Quick presets
@@ -790,9 +836,8 @@ elif st.session_state.selected_feature == FEATURE_COMPRESSOR:
             target_quality = st.session_state["quality_slider_val"]
 
         else:
-            # Mode: Target File Size
-            st.markdown("##### Set Desired Target File Size (Slider & Range Box)")
-            st.caption("The engine will optimize stream and image encoding to achieve or beat your target file size.")
+            st.markdown("##### Set Desired Target File Size")
+            st.caption("The engine optimizes streams and resolutions to match or beat your target file size.")
 
             unit_col, _ = st.columns([1, 3])
             with unit_col:
@@ -825,8 +870,7 @@ elif st.session_state.selected_feature == FEATURE_COMPRESSOR:
                     max_value=float(round(max_limit, 2)),
                     step=float(step_val),
                     key=target_slider_key,
-                    on_change=on_target_slider_change,
-                    help=f"Select target file size between {min_limit:.2f} {size_unit} and {max_limit:.2f} {size_unit}"
+                    on_change=on_target_slider_change
                 )
             with col_t_box:
                 st.number_input(
@@ -835,8 +879,7 @@ elif st.session_state.selected_feature == FEATURE_COMPRESSOR:
                     max_value=float(round(max_limit, 2)),
                     step=float(step_val),
                     key=target_box_key,
-                    on_change=on_target_box_change,
-                    help=f"Enter exact target file size in {size_unit}"
+                    on_change=on_target_box_change
                 )
 
             selected_target = st.session_state[target_slider_key]
@@ -846,9 +889,8 @@ elif st.session_state.selected_feature == FEATURE_COMPRESSOR:
                 target_size_kb_arg = selected_target
 
             target_savings_est = max(0.0, (1.0 - (target_size_kb_arg / orig_size_kb)) * 100.0)
-            st.info(f"🎯 Target: **{selected_target:.2f} {size_unit}** (Estimated size reduction: ~**{target_savings_est:.1f}%**)")
+            st.info(f"🎯 Target: **{selected_target:.2f} {size_unit}** (Estimated reduction: ~**{target_savings_est:.1f}%**)")
 
-        # Optional format conversion for images
         output_format_opt = None
         ext_lower = os.path.splitext(file_name)[1].lower()
         if ext_lower in [".jpg", ".jpeg", ".png", ".webp", ".bmp", ".tiff"]:
@@ -880,7 +922,7 @@ elif st.session_state.selected_feature == FEATURE_COMPRESSOR:
             except Exception as e:
                 st.error(f"Compression failed: {e}")
 
-        # DISPLAY COMPRESSION RESULTS
+        # Display Results
         if st.session_state.compression_result is not None:
             res = st.session_state.compression_result
             st.markdown("### 📊 Compression Results")
@@ -888,10 +930,10 @@ elif st.session_state.selected_feature == FEATURE_COMPRESSOR:
             with st.container(border=True):
                 m_col1, m_col2, m_col3 = st.columns(3)
                 with m_col1:
-                    st.metric("Original Size", format_size(res["original_size"]))
+                    st.metric("Original Mass", format_size(res["original_size"]))
                 with m_col2:
                     st.metric(
-                        "Compressed Size",
+                        "Compressed Mass",
                         format_size(res["compressed_size"]),
                         delta=f"-{res['saved_percent']:.1f}%",
                         delta_color="inverse"
@@ -899,7 +941,6 @@ elif st.session_state.selected_feature == FEATURE_COMPRESSOR:
                 with m_col3:
                     st.metric("Total Space Saved", f"{format_size(res['saved_bytes'])} ({res['saved_percent']:.1f}%)")
 
-            # Image Before & After Preview
             if res.get("file_type") == "image":
                 with st.expander("👁️ Visual Comparison (Original vs Compressed)", expanded=True):
                     prev_c1, prev_c2 = st.columns(2)
@@ -910,16 +951,14 @@ elif st.session_state.selected_feature == FEATURE_COMPRESSOR:
                         st.markdown("**Compressed Image**")
                         st.image(res["bytes"], use_container_width=True)
 
-            # Details
             details = res.get("details", {})
             if res.get("file_type") == "pdf":
                 st.caption(f"PDF Pages: {details.get('pages', 1)} | Embedded Images Re-encoded: {details.get('images_compressed', 0)}")
             elif res.get("file_type") == "image":
                 dims_orig = details.get("dimensions_original", ("", ""))
                 dims_comp = details.get("dimensions_compressed", ("", ""))
-                st.caption(f"Original Dimensions: {dims_orig[0]}x{dims_orig[1]} px | Output Dimensions: {dims_comp[0]}x{dims_comp[1]} px | Quality: {details.get('quality_used', 'N/A')}")
+                st.caption(f"Original: {dims_orig[0]}x{dims_orig[1]} px | Output: {dims_comp[0]}x{dims_comp[1]} px | Quality: {details.get('quality_used', 'N/A')}")
 
-            # DOWNLOAD BUTTON
             st.download_button(
                 label=f"⬇️ Download Compressed File ({res['output_filename']} - {format_size(res['compressed_size'])})",
                 data=res["bytes"],
@@ -931,17 +970,17 @@ elif st.session_state.selected_feature == FEATURE_COMPRESSOR:
 
 
 # ==============================================================================
-# FEATURE 4: 📝 LATEX TO DOCUMENT CONVERTER
+# MISSION 4: 📜 LATEX SCRIBE STUDIO
 # ==============================================================================
 
-elif st.session_state.selected_feature == FEATURE_LATEX:
-    st.header("📝 LaTeX to Document (DOCX & PDF)")
+elif st.session_state.current_tool == FEATURE_LATEX:
+    st.header("📜 LaTeX to Document (DOCX & PDF)")
     st.markdown(
-        "Convert LaTeX source code or `.tex` files into editable Microsoft Word (`.docx`) documents and export to publication-ready PDF."
+        "Transcribe LaTeX source code or `.tex` documents into editable Microsoft Word (`.docx`) files and export to publication-ready PDF."
     )
 
     input_method = st.radio(
-        "Choose Input Method",
+        "Choose Transcription Input:",
         ["Paste Text", "Upload File"],
         horizontal=True
     )
@@ -950,53 +989,50 @@ elif st.session_state.selected_feature == FEATURE_LATEX:
 
     if input_method == "Paste Text":
         latex_content = st.text_area(
-            "Paste LaTeX Code",
+            "Paste LaTeX Source Code",
             height=280,
             placeholder=r"\documentclass{article}" + "\n" + r"\begin{document}" + "\n" + "Hello World!" + "\n" + r"\end{document}"
         )
     else:
         uploaded_file = st.file_uploader(
-            "Upload .tex File",
+            "Upload .tex Document",
             type=["tex"],
             key="tex_uploader"
         )
         if uploaded_file:
             latex_content = uploaded_file.read().decode("utf-8")
 
-    # PREVIEW & VALIDATION
     if latex_content:
-        st.subheader("LaTeX Preview & Validation")
+        st.subheader("LaTeX Syntax Telemetry & Validation")
 
-        with st.expander("Show LaTeX Code Preview", expanded=False):
+        with st.expander("Show Raw LaTeX Source Preview", expanded=False):
             st.code(latex_content, language="latex")
 
         errors = validate_latex(latex_content)
 
         if errors:
-            st.error("Validation Errors Found:")
+            st.error("Validation Errors Detected:")
             for error in errors:
                 st.write("•", error)
         else:
             st.success("No Validation Syntax Errors Found")
 
-    # DOCX GENERATION
     col1, col2 = st.columns(2)
 
     with col1:
-        if st.button("🚀 Generate DOCX", type="primary", use_container_width=True):
+        if st.button("🚀 Generate DOCX Document", type="primary", use_container_width=True):
             if not latex_content.strip():
                 st.warning("Please enter or upload LaTeX content first.")
             else:
                 try:
-                    with st.spinner("Converting LaTeX to DOCX..."):
+                    with st.spinner("Transcribing LaTeX to DOCX..."):
                         docx_file = convert_latex_to_docx(latex_content)
                         st.session_state.docx_file = docx_file
-                        st.session_state.pdf_file = None  # Reset PDF state on new DOCX
-                    st.success("DOCX Generated Successfully!")
+                        st.session_state.pdf_file = None
+                    st.success("DOCX Document Generated Successfully!")
                 except Exception as e:
                     st.error(f"Conversion Failed: {e}")
 
-    # DOCX DOWNLOAD & PDF CONVERSION
     if st.session_state.docx_file and os.path.exists(st.session_state.docx_file):
         st.markdown("---")
         with st.container(border=True):
@@ -1016,15 +1052,14 @@ elif st.session_state.selected_feature == FEATURE_LATEX:
                     with st.spinner("Converting DOCX to PDF..."):
                         pdf_file = convert_docx_to_pdf(st.session_state.docx_file)
                         st.session_state.pdf_file = pdf_file
-                    st.success("PDF Generated Successfully!")
+                    st.success("PDF Document Generated Successfully!")
                 except Exception as e:
                     st.error(f"PDF Conversion Failed: {e}")
 
-    # PDF DOWNLOAD & PDF SPLITTING FOR GENERATED PDF
     if st.session_state.pdf_file and os.path.exists(st.session_state.pdf_file):
         st.markdown("---")
         with st.container(border=True):
-            st.subheader("3. PDF File & Page Management")
+            st.subheader("3. PDF Management & Page Slicing")
 
             with open(st.session_state.pdf_file, "rb") as f:
                 pdf_bytes = f.read()
@@ -1043,7 +1078,7 @@ elif st.session_state.selected_feature == FEATURE_LATEX:
             if total_pages > 0:
                 st.markdown("#### Split or Extract Pages from Generated PDF")
                 action_gen = st.radio(
-                    "Select PDF Tool for Generated PDF:",
+                    "Select PDF Action:",
                     ["None", "Split into Single Pages", "Extract Page Range"],
                     key="gen_pdf_action",
                     horizontal=True

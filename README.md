@@ -1,6 +1,6 @@
-# Document, PDF & Compression Suite Pro
+# Constellation Document & PDF Studio Pro 🌌
 
-A comprehensive web-based application designed to **join multiple PDF documents**, **split & extract PDF page ranges**, **compress PDFs and images to exact target sizes or qualities**, and **convert LaTeX documents into editable Microsoft Word (`.docx`) and PDF formats**.
+A deep-space themed web application designed to **join multiple PDF documents**, **split & extract PDF page ranges**, **compress PDFs and images to exact target sizes or qualities**, and **convert LaTeX documents into editable Microsoft Word (`.docx`) and PDF formats**.
 
 ---
 
@@ -8,11 +8,12 @@ A comprehensive web-based application designed to **join multiple PDF documents*
 
 Working with research papers, technical reports, multi-part documentation, and high-resolution scans often requires several disparate tools. 
 
-This suite provides a unified, modern web application powered by **Streamlit** and **pypdf**:
-1. **🔗 Multi-PDF File Joiner & Merger**: Select and combine two or more PDFs with interactive reordering (⬆️ / ⬇️), page range calculation, and automatic table of contents bookmarking.
-2. **✂️ PDF Page Splitter & Extractor**: Divide any multi-page PDF into single-page PDFs (downloadable individually or as a `.zip` archive) or slice out specific page intervals ("From Page X to Page Y").
-3. **🗜️ Universal File Compressor**: Intelligently shrink PDFs and images (JPEG, PNG, WEBP, TIFF, BMP) down to a precise target file size (KB / MB) or desired visual quality percentage.
-4. **📝 LaTeX to Word & PDF Conversion**: Convert `.tex` source code or uploaded files into editable Word documents (`.docx`) and publication-ready PDFs with syntax validation.
+This suite provides a unified, constellation-themed web application powered by **Streamlit** and **pypdf**:
+1. **🌌 Multi-PDF File Joiner & Merger (Supernova)**: Select and combine two or more PDFs with interactive orbital reordering (⬆️ / ⬇️), page range calculation, and automatic table of contents bookmarking.
+2. **☄️ PDF Page Splitter & Extractor (Comet)**: Divide any multi-page PDF into single-page star PDFs (downloadable individually or as a `.zip` archive) or slice out specific page intervals ("From Page X to Page Y").
+3. **🕳️ Universal File Compressor (Gravity Engine)**: Intelligently shrink PDFs and images (JPEG, PNG, WEBP, TIFF, BMP) down to a precise target file size (KB / MB) or desired visual quality percentage.
+4. **📜 LaTeX to Word & PDF Conversion (Celestial Scribe)**: Convert `.tex` source code or uploaded files into editable Word documents (`.docx`) and publication-ready PDFs with syntax validation.
+5. **🛰️ Mission Control Dropdown & Constellation Hub**: Seamless tool switching with synchronized cards and dropdown control.
 
 ---
 
