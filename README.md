@@ -19,11 +19,16 @@ This suite provides a unified, constellation-themed web application powered by *
 
 ## Key Features
 
-### 🔗 Multi-PDF File Joiner & Merger (New!)
-* **Multi-File Selection**: Select or drag-and-drop multiple PDF files at once.
-* **Interactive Document Queue**: Inspect each file's page count and size.
-* **Custom Reordering**: Move files up (⬆️) or down (⬇️) or reverse sequence to customize the exact merge order.
-* **Document Bookmarking**: Automatically embeds an outline / table of contents linking to each source file's starting page in the combined PDF.
+### 🌌 Multi-File Joiner & Universal Document Synthesizer (Enhanced!)
+* **Universal File Support**: Upload and join **PDFs, JPEGs, PNGs, WEBPs, BMPs, and TIFFs** in any sequence.
+* **Incremental Batch Uploading**: Select one file, then click **➕ Add More Files** at any time to append additional documents without losing existing items.
+* **Flexible Extraction & Export Formats**:
+  - 📄 **Consolidated PDF (`.pdf`)**: Unified multi-page document with automatic Table of Contents bookmarks.
+  - 🖼️ **Lossless Image Package (`.zip`)**: Individual high-resolution PNG images of all merged pages.
+  - 🖼️ **Optimized JPEG Package (`.zip`)**: Compressed JPEG images of all pages.
+  - 📑 **Multi-Page TIFF (`.tiff`)**: Single unified multi-page TIFF file.
+* **Interactive Document Queue**: Inspect each file's format, page count or resolution, and size.
+* **Orbital Reordering**: Move files up (⬆️) or down (⬇️) or reverse order to set the exact merge sequence.
 * **Page Breakdown Matrix**: Inspect the exact page interval of each document within the consolidated output.
 
 ### ✂️ PDF Page Splitting & Range Extraction Features
@@ -51,7 +56,8 @@ This suite provides a unified, constellation-themed web application powered by *
 | Python 3 | Core backend processing engine |
 | Streamlit | Modern reactive web application UI |
 | pypdf | PDF merging, page counting, single-page splitting, & extraction |
-| Pillow | Image stream re-encoding & compression |
+| Pillow | Image stream handling, format conversion, & EXIF orientation |
+| pypdfium2 | High-fidelity rendering of PDF pages to raster images (PNG/JPEG/TIFF) |
 | Pandoc / pypandoc | LaTeX to DOCX conversion |
 | docx2pdf | DOCX to PDF conversion (requires Word on Windows) |
 

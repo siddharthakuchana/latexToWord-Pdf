@@ -3,3 +3,4 @@ pypandoc
 docx2pdf
 pypdf
 Pillow
+pypdfium2

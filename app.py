@@ -16,8 +16,9 @@ from compressor import (
     format_size
 )
 from pdf_joiner import (
-    get_pdf_info,
-    merge_pdfs
+    get_file_info,
+    merge_files,
+    get_pdf_info
 )
 
 
@@ -71,6 +72,9 @@ if "joiner_seen_uids" not in st.session_state:
 
 if "joiner_result" not in st.session_state:
     st.session_state.joiner_result = None
+
+if "uploader_round" not in st.session_state:
+    st.session_state.uploader_round = 0
 
 
 # State synchronization callback for tool switching
@@ -439,33 +443,49 @@ st.markdown("---")
 # ==============================================================================
 
 if st.session_state.current_tool == FEATURE_JOINER:
-    st.header("🌌 Multi-PDF Joiner & Document Merger")
+    st.header("🌌 Multi-File Joiner & Universal Document Synthesizer")
     st.markdown(
-        "Select and combine **two or more PDF documents** into a single continuous file. "
-        "Freely adjust document sequence with orbital controls, inspect pages, and generate automatic outline bookmarks."
+        "Join **PDFs, JPEGs, PNGs, WEBPs, BMPs, or TIFFs** into a unified document or image package. "
+        "Upload files individually or in batches, arrange their order, and **choose your preferred extraction format**."
     )
 
-    # Multi-file uploader
-    uploaded_join_files = st.file_uploader(
-        "Select Multiple PDF Files to Join",
-        type=["pdf"],
-        accept_multiple_files=True,
-        key="pdf_joiner_uploader",
-        help="Drag and drop or select multiple PDF files from your cosmos."
-    )
+    # --------------------------------------------------------------------------
+    # UPLOADER & INCREMENTAL FILE SELECTION
+    # --------------------------------------------------------------------------
+    with st.container(border=True):
+        up_h1, up_h2 = st.columns([3, 1])
+        with up_h1:
+            st.markdown("#### 📥 Select or Drag Files to Join")
+            st.caption("Supports **PDF, JPEG, PNG, WEBP, TIFF, BMP** documents and images.")
+        with up_h2:
+            if st.button("➕ Add More Files", key="btn_add_more_files_top", use_container_width=True, help="Clear file picker so you can choose additional files to append to queue"):
+                st.session_state.uploader_round += 1
+                st.rerun()
 
+        uploaded_join_files = st.file_uploader(
+            "Select files to join (PDF, Images)",
+            type=["pdf", "png", "jpg", "jpeg", "webp", "bmp", "tiff", "tif"],
+            accept_multiple_files=True,
+            key=f"pdf_joiner_uploader_{st.session_state.uploader_round}",
+            label_visibility="collapsed"
+        )
+
+    # Process newly uploaded files into persistent queue
     if uploaded_join_files:
         for f in uploaded_join_files:
             uid = f"{f.name}_{f.size}"
             if uid not in st.session_state.joiner_seen_uids:
                 f_bytes = f.getvalue()
-                info = get_pdf_info(f_bytes, filename=f.name)
+                info = get_file_info(f_bytes, filename=f.name)
                 st.session_state.joiner_queue.append({
                     "uid": uid,
                     "filename": f.name,
                     "bytes": f_bytes,
                     "size_bytes": f.size,
+                    "file_type": info["file_type"],
+                    "format_label": info["format_label"],
                     "pages": info["page_count"],
+                    "dimensions": info.get("dimensions"),
                     "valid": info["valid"],
                     "error": info["error"]
                 })
@@ -474,8 +494,11 @@ if st.session_state.current_tool == FEATURE_JOINER:
     queue = st.session_state.joiner_queue
 
     if not queue:
-        st.info("🛰️ Ready for documents. Upload **2 or more PDF files** above to launch the joiner.")
+        st.info("🛰️ Ready for documents. Upload one or more **PDFs or Images** above to launch the joiner.")
     else:
+        # Prompt to add more files easily
+        st.success(f"✅ **{len(queue)} file(s) currently in queue.** You can use **➕ Add More Files** above at any time to select and append additional files.")
+
         total_q_files = len(queue)
         total_q_pages = sum(item["pages"] for item in queue if item["valid"])
         total_q_size = sum(item["size_bytes"] for item in queue)
@@ -484,17 +507,17 @@ if st.session_state.current_tool == FEATURE_JOINER:
         with st.container(border=True):
             m_c1, m_c2, m_c3, m_c4 = st.columns(4)
             with m_c1:
-                st.metric("📁 Documents in Queue", f"{total_q_files} PDFs")
+                st.metric("📁 Files in Queue", f"{total_q_files} item(s)")
             with m_c2:
-                st.metric("📄 Combined Page Mass", f"{total_q_pages} pages")
+                st.metric("📄 Total Page Mass", f"{total_q_pages} page(s)")
             with m_c3:
-                st.metric("📦 Cumulative Size", format_size(total_q_size))
+                st.metric("📦 Combined Size", format_size(total_q_size))
             with m_c4:
                 valid_count = sum(1 for item in queue if item["valid"])
-                st.metric("⚡ Status", f"{valid_count}/{total_q_files} Valid")
+                st.metric("⚡ Inspection Status", f"{valid_count}/{total_q_files} Valid")
 
         st.markdown("### 📋 Document Merge Sequence")
-        st.caption("Use the ⬆️ Up and ⬇️ Down thrusters to position documents in your preferred reading order.")
+        st.caption("Arrange files in your exact preferred reading sequence using the orbital ⬆️ Up and ⬇️ Down thrusters.")
 
         # Interactive document queue cards
         for idx, item in enumerate(queue):
@@ -505,9 +528,16 @@ if st.session_state.current_tool == FEATURE_JOINER:
                     st.markdown(f"#### `#{idx + 1}`")
 
                 with col_det:
-                    st.markdown(f"**📄 {item['filename']}**")
+                    is_pdf_item = (item["file_type"] == "pdf")
+                    icon = "📄" if is_pdf_item else "🖼️"
+                    st.markdown(f"**{icon} {item['filename']}** `{item.get('format_label', 'FILE')}`")
                     if item["valid"]:
-                        st.caption(f"Pages: **{item['pages']}** | Size: **{format_size(item['size_bytes'])}**")
+                        if is_pdf_item:
+                            st.caption(f"Type: **PDF Document** | Pages: **{item['pages']}** | Size: **{format_size(item['size_bytes'])}**")
+                        else:
+                            dims = item.get("dimensions")
+                            dim_str = f"{dims[0]}x{dims[1]} px" if dims else "Standard"
+                            st.caption(f"Type: **{item.get('format_label', 'IMAGE')} Image** | Resolution: **{dim_str}** | Size: **{format_size(item['size_bytes'])}**")
                     else:
                         st.error(f"⚠️ Inspection Error: {item['error']}")
 
@@ -531,7 +561,7 @@ if st.session_state.current_tool == FEATURE_JOINER:
         # Bulk actions
         ba1, ba2, _ = st.columns([2, 2, 4])
         with ba1:
-            if st.button("🔄 Reverse Document Order", use_container_width=True):
+            if st.button("🔄 Reverse Order", use_container_width=True):
                 queue.reverse()
                 st.rerun()
         with ba2:
@@ -543,73 +573,122 @@ if st.session_state.current_tool == FEATURE_JOINER:
 
         st.markdown("---")
 
-        # Merge Configuration
-        st.subheader("⚙️ Merge Settings")
+        # ----------------------------------------------------------------------
+        # EXTRACTION & SYNTHESIS SETTINGS
+        # ----------------------------------------------------------------------
+        st.subheader("⚙️ Extraction & Export Settings")
         with st.container(border=True):
             s1, s2 = st.columns(2)
             with s1:
-                custom_merge_filename = st.text_input(
-                    "Consolidated Output Filename",
-                    value="merged_document.pdf",
-                    help="Name for the resulting joined PDF file."
-                )
-            with s2:
-                add_toc_bookmarks = st.checkbox(
-                    "📑 Generate Constellation Outline (Bookmarks)",
-                    value=True,
-                    help="Generates an outline table of contents so readers can navigate to each document."
+                export_format_choice = st.selectbox(
+                    "🎯 Choose Extraction / Output Format:",
+                    options=[
+                        "📄 Consolidated PDF Document (.pdf)",
+                        "🖼️ High-Res Image Package (.zip of PNGs)",
+                        "🖼️ Compressed Image Package (.zip of JPEGs)",
+                        "📑 Multi-Page TIFF Document (.tiff)"
+                    ],
+                    index=0,
+                    help="Select which file format you want all joined files extracted or compiled into."
                 )
 
-        # Merge Action Button
+                fmt_code = "PDF"
+                if "PNG" in export_format_choice:
+                    fmt_code = "PNG_ZIP"
+                elif "JPEG" in export_format_choice:
+                    fmt_code = "JPEG_ZIP"
+                elif "TIFF" in export_format_choice:
+                    fmt_code = "TIFF"
+
+                output_base_name = st.text_input(
+                    "Base Output Filename",
+                    value="synthesized_document",
+                    help="Name for the resulting file (extension will be added automatically based on selected format)."
+                )
+
+            with s2:
+                if fmt_code == "PDF":
+                    add_toc_bookmarks = st.checkbox(
+                        "📑 Generate Table of Contents (Outline Bookmarks)",
+                        value=True,
+                        help="Creates bookmarks in the PDF viewer outline for each joined document."
+                    )
+                    selected_dpi = 150
+                else:
+                    add_toc_bookmarks = False
+                    selected_dpi = st.select_slider(
+                        "Image Rendering Resolution (DPI)",
+                        options=[100, 150, 200, 300],
+                        value=150,
+                        help="150 DPI is balanced and fast; 300 DPI produces crystal-clear print quality."
+                    )
+
+        # Merge / Extract Action Button
         if len(queue) < 2:
-            st.warning("⚠️ At least **2 PDF documents** are required in the queue to perform a merge.")
+            st.warning("⚠️ At least **2 files** (PDFs or Images) are required in the queue to perform a join.")
         else:
-            if st.button("🚀 Merge All PDFs Now", type="primary", use_container_width=True):
+            if st.button("🚀 Join & Extract Files Now", type="primary", use_container_width=True):
                 try:
-                    with st.spinner(f"Synthesizing {len(queue)} PDFs into '{custom_merge_filename}'..."):
-                        merge_res = merge_pdfs(
-                            pdf_items=queue,
-                            output_filename=custom_merge_filename,
-                            add_bookmarks=add_toc_bookmarks
+                    with st.spinner(f"Joining {len(queue)} files and compiling into {fmt_code}..."):
+                        merge_res = merge_files(
+                            items=queue,
+                            output_filename=output_base_name,
+                            output_format=fmt_code,
+                            add_bookmarks=add_toc_bookmarks,
+                            render_dpi=selected_dpi
                         )
                         st.session_state.joiner_result = merge_res
-                    st.success(f"🎉 Successfully merged {merge_res['total_files']} PDFs into {merge_res['total_pages']} pages!")
+                    st.success(f"🎉 Successfully joined {merge_res['total_files']} files ({merge_res['total_pages']} pages) into '{merge_res['output_filename']}'!")
                 except Exception as e:
-                    st.error(f"Merge operation failed: {e}")
+                    st.error(f"Join & extraction failed: {e}")
 
-        # Display Merge Results
+        # Display Merge Results & Download
         if st.session_state.joiner_result is not None:
             res = st.session_state.joiner_result
             st.markdown("---")
-            st.subheader("🎉 Merged Document Ready for Download")
+            st.subheader(f"🎉 Synthesized Output Ready ({res['format']})")
 
             with st.container(border=True):
-                r1, r2, r3 = st.columns(3)
+                r1, r2, r3, r4 = st.columns(4)
                 with r1:
-                    st.metric("Documents Joined", f"{res['total_files']} files")
+                    st.metric("Files Merged", f"{res['total_files']} items")
                 with r2:
-                    st.metric("Total Page Count", f"{res['total_pages']} pages")
+                    st.metric("Total Synthesized Pages", f"{res['total_pages']} pages")
                 with r3:
-                    st.metric("Final Output Size", format_size(res["total_size_bytes"]))
+                    st.metric("Output File Size", format_size(res["total_size_bytes"]))
+                with r4:
+                    st.metric("Format", res["format"])
 
-                with st.expander("📑 View Page Breakdown Matrix", expanded=True):
+                with st.expander("📑 View Document Sequence & Page Breakdown Matrix", expanded=True):
                     for item in res["file_breakdown"]:
                         b_col1, b_col2, b_col3 = st.columns([1, 6, 3])
                         with b_col1:
                             st.write(f"**#{item['order']}**")
                         with b_col2:
-                            st.write(f"📄 {item['filename']}")
+                            t_badge = "📄 PDF" if item["file_type"] == "PDF" else "🖼️ Image"
+                            st.write(f"{item['filename']} `({t_badge})`")
                         with b_col3:
-                            st.write(f"Pages **{item['start_page']}** – **{item['end_page']}** ({item['pages']} pages)")
+                            st.write(f"Pages **{item['start_page']}** – **{item['end_page']}** ({item['pages']} page{'s' if item['pages']>1 else ''})")
 
+                # Primary Download Button
                 st.download_button(
-                    label=f"⬇️ Download Merged PDF ({res['output_filename']} - {format_size(res['total_size_bytes'])})",
-                    data=res["pdf_bytes"],
+                    label=f"⬇️ Download {res['output_filename']} ({format_size(res['total_size_bytes'])})",
+                    data=res["bytes"],
                     file_name=res["output_filename"],
-                    mime="application/pdf",
+                    mime=res["mime_type"],
                     type="primary",
                     use_container_width=True
                 )
+
+                # Secondary Download Button (if image archive was exported, also offer direct PDF download)
+                if res["format"] != "PDF" and "pdf_bytes" in res:
+                    st.download_button(
+                        label=f"📄 Also Download as Single Consolidated PDF ({format_size(len(res['pdf_bytes']))})",
+                        data=res["pdf_bytes"],
+                        file_name=f"{os.path.splitext(res['output_filename'])[0]}.pdf",
+                        mime="application/pdf",
+                        use_container_width=True
+                    )
 
 
 # ==============================================================================
