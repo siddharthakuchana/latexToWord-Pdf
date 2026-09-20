@@ -27,8 +27,8 @@ from pdf_joiner import (
 # ==============================================================================
 
 st.set_page_config(
-    page_title="Constellation PDF & Document Universe",
-    page_icon="🌌",
+    page_title="SK OmniDoc Studio Pro — Document & PDF Power Suite",
+    page_icon="📑",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -38,10 +38,10 @@ st.set_page_config(
 # FEATURE CONSTANTS & STATE MANAGEMENT
 # ==============================================================================
 
-FEATURE_JOINER = "🌌 PDF Joiner & Merger (Supernova)"
-FEATURE_SPLITTER = "☄️ PDF Page Splitter & Extractor (Comet)"
-FEATURE_COMPRESSOR = "🕳️ Universal File Compressor (Gravity Engine)"
-FEATURE_LATEX = "📜 LaTeX to Document Studio (Celestial Scribe)"
+FEATURE_JOINER = "📑 Universal File Merger (PDF & Images)"
+FEATURE_SPLITTER = "✂️ PDF Page Splitter & Range Slicer"
+FEATURE_COMPRESSOR = "🗜️ Smart File Compressor (Size & Quality)"
+FEATURE_LATEX = "📝 LaTeX to Document Engine (DOCX & PDF)"
 
 ALL_FEATURES = [
     FEATURE_JOINER,
@@ -248,46 +248,46 @@ st.markdown("""
 
 
 # ==============================================================================
-# CELESTIAL HERO BANNER
+# HERO BANNER
 # ==============================================================================
 
 st.markdown("""
 <div class="cosmic-hero">
-    <div class="stardust-badge">🌌 Deep Space Document Constellation</div>
-    <div class="cosmic-title">Constellation Document & PDF Studio</div>
+    <div class="stardust-badge">⚡ Professional Document & PDF Suite</div>
+    <div class="cosmic-title">OmniDoc Studio Pro</div>
     <div class="cosmic-subtitle">
-        Explore a galaxy of high-precision document engines: <strong>Join & merge multiple PDFs</strong>, 
-        <strong>split & extract orbital page slices</strong>, <strong>compress files to targeted mass</strong>, 
-        and <strong>transcribe LaTeX into Word & PDF</strong>.
+        A unified, high-performance suite to <strong>join & synthesize multi-format files</strong>, 
+        <strong>split & extract PDF page ranges</strong>, <strong>compress documents to exact target sizes</strong>, 
+        and <strong>compile LaTeX into Word & PDF</strong>.
     </div>
 </div>
 """, unsafe_allow_html=True)
 
 
 # ==============================================================================
-# CONSTELLATION CARDS HUB (VISUAL TOOL SHOWCASE)
+# FEATURE CARDS HUB (VISUAL TOOL SHOWCASE)
 # ==============================================================================
 
-st.markdown("### 🔭 Constellation Hub — All Available Missions")
-st.caption("Click any mission card or use the Mission Control dropdown below to switch tools seamlessly.")
+st.markdown("### 🧭 Feature Hub — All Available Tools")
+st.caption("Click any feature card below or use the Tool Selector dropdown to switch between tools instantly.")
 
 hub_c1, hub_c2, hub_c3, hub_c4 = st.columns(4)
 
-# Mission 1: PDF Joiner
+# Tool 1: OmniMerge (PDF & Image Joiner)
 with hub_c1:
     is_active_joiner = (st.session_state.current_tool == FEATURE_JOINER)
     card_cls = "constellation-card orbiting" if is_active_joiner else "constellation-card"
     st.markdown(f"""
     <div class="{card_cls}">
-        <span class="cosmic-badge badge-supernova">NEW MISSION</span>
-        <h4 style="margin: 4px 0 6px 0; color: #f8fafc;">🌌 PDF Joiner</h4>
+        <span class="cosmic-badge badge-supernova">MULTI-FORMAT</span>
+        <h4 style="margin: 4px 0 6px 0; color: #f8fafc;">📑 OmniMerge</h4>
         <p style="font-size: 0.83rem; color: #94a3b8; margin: 0 0 10px 0; min-height: 48px;">
-            Join 2+ PDFs in custom sequence with interactive reordering and table of contents.
+            Join PDFs and images (JPG, PNG, WEBP, TIFF) into a unified PDF or image archive.
         </p>
     </div>
     """, unsafe_allow_html=True)
     st.button(
-        "🪐 Current Orbit" if is_active_joiner else "⚡ Engage Joiner",
+        "✅ Active Tool" if is_active_joiner else "👉 Select OmniMerge",
         key="btn_hub_joiner",
         type="primary" if is_active_joiner else "secondary",
         use_container_width=True,
@@ -295,21 +295,21 @@ with hub_c1:
         args=(FEATURE_JOINER,)
     )
 
-# Mission 2: PDF Splitter
+# Tool 2: PageSlicer (PDF Splitter)
 with hub_c2:
     is_active_splitter = (st.session_state.current_tool == FEATURE_SPLITTER)
     card_cls = "constellation-card orbiting" if is_active_splitter else "constellation-card"
     st.markdown(f"""
     <div class="{card_cls}">
-        <span class="cosmic-badge badge-comet">ORBITAL</span>
-        <h4 style="margin: 4px 0 6px 0; color: #f8fafc;">☄️ PDF Splitter</h4>
+        <span class="cosmic-badge badge-comet">EXTRACTOR</span>
+        <h4 style="margin: 4px 0 6px 0; color: #f8fafc;">✂️ PageSlicer</h4>
         <p style="font-size: 0.83rem; color: #94a3b8; margin: 0 0 10px 0; min-height: 48px;">
-            Divide PDFs into single-page stars (ZIP) or extract custom page intervals.
+            Divide multi-page PDFs into single-page files (ZIP) or extract custom page intervals.
         </p>
     </div>
     """, unsafe_allow_html=True)
     st.button(
-        "🪐 Current Orbit" if is_active_splitter else "⚡ Engage Splitter",
+        "✅ Active Tool" if is_active_splitter else "👉 Select PageSlicer",
         key="btn_hub_splitter",
         type="primary" if is_active_splitter else "secondary",
         use_container_width=True,
@@ -317,21 +317,21 @@ with hub_c2:
         args=(FEATURE_SPLITTER,)
     )
 
-# Mission 3: Universal Compressor
+# Tool 3: OptiCompress (File Compressor)
 with hub_c3:
     is_active_comp = (st.session_state.current_tool == FEATURE_COMPRESSOR)
     card_cls = "constellation-card orbiting" if is_active_comp else "constellation-card"
     st.markdown(f"""
     <div class="{card_cls}">
-        <span class="cosmic-badge badge-gravity">MASS CRUSH</span>
-        <h4 style="margin: 4px 0 6px 0; color: #f8fafc;">🕳️ Compressor</h4>
+        <span class="cosmic-badge badge-gravity">OPTIMIZER</span>
+        <h4 style="margin: 4px 0 6px 0; color: #f8fafc;">🗜️ OptiCompress</h4>
         <p style="font-size: 0.83rem; color: #94a3b8; margin: 0 0 10px 0; min-height: 48px;">
-            Compress PDFs & images to exact target KB/MB or adjustable quality sliders.
+            Compress PDFs & images down to exact target KB/MB or adjustable quality sliders.
         </p>
     </div>
     """, unsafe_allow_html=True)
     st.button(
-        "🪐 Current Orbit" if is_active_comp else "⚡ Engage Compressor",
+        "✅ Active Tool" if is_active_comp else "👉 Select OptiCompress",
         key="btn_hub_comp",
         type="primary" if is_active_comp else "secondary",
         use_container_width=True,
@@ -339,21 +339,21 @@ with hub_c3:
         args=(FEATURE_COMPRESSOR,)
     )
 
-# Mission 4: LaTeX Converter
+# Tool 4: TeXPublish (LaTeX Scribe)
 with hub_c4:
     is_active_latex = (st.session_state.current_tool == FEATURE_LATEX)
     card_cls = "constellation-card orbiting" if is_active_latex else "constellation-card"
     st.markdown(f"""
     <div class="{card_cls}">
-        <span class="cosmic-badge badge-scribe">DOCX/PDF</span>
-        <h4 style="margin: 4px 0 6px 0; color: #f8fafc;">📜 LaTeX Scribe</h4>
+        <span class="cosmic-badge badge-scribe">DOCX / PDF</span>
+        <h4 style="margin: 4px 0 6px 0; color: #f8fafc;">📝 TeXPublish</h4>
         <p style="font-size: 0.83rem; color: #94a3b8; margin: 0 0 10px 0; min-height: 48px;">
-            Convert raw LaTeX code or .tex files into editable Word and publication PDFs.
+            Convert raw LaTeX code or .tex files into editable Word documents and PDFs.
         </p>
     </div>
     """, unsafe_allow_html=True)
     st.button(
-        "🪐 Current Orbit" if is_active_latex else "⚡ Engage Scribe",
+        "✅ Active Tool" if is_active_latex else "👉 Select TeXPublish",
         key="btn_hub_latex",
         type="primary" if is_active_latex else "secondary",
         use_container_width=True,
@@ -363,17 +363,17 @@ with hub_c4:
 
 
 # ==============================================================================
-# PROPER MISSION CONTROL DROPDOWN
+# TOOL SELECTOR DROPDOWN
 # ==============================================================================
 
 st.markdown("""
 <div class="mission-control-box">
     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
         <span style="font-family: 'Space Grotesk', sans-serif; font-size: 1rem; font-weight: 700; color: #38bdf8; display: flex; align-items: center; gap: 8px;">
-            🛰️ Active Mission Selector Dropdown
+            🎯 Active Tool Selector Dropdown
         </span>
         <span style="font-size: 0.75rem; color: #94a3b8;">
-            Synchronized with Constellation Cards
+            Synchronized with Feature Cards
         </span>
     </div>
 </div>
@@ -381,7 +381,7 @@ st.markdown("""
 
 # Clean, single-source-of-truth selectbox dropdown
 active_tool_selection = st.selectbox(
-    "Select Active Mission Tool:",
+    "Select Active Tool:",
     options=ALL_FEATURES,
     key="current_tool",
     label_visibility="collapsed"
@@ -389,21 +389,28 @@ active_tool_selection = st.selectbox(
 
 
 # ==============================================================================
-# SIDEBAR TELEMETRY & CONTROLS
+# SIDEBAR NAVIGATION & CONTROLS
 # ==============================================================================
 
 with st.sidebar:
-    st.markdown("### 🌌 Mission Telemetry")
-    st.caption("Orbital navigation & status")
+    st.markdown("### 🛠️ SK OmniDoc Studio Pro")
+    st.caption("All-in-one Document & PDF Suite")
 
-    st.info(f"**Engaged Tool**:\n{st.session_state.current_tool}")
+    st.info(f"**Currently Active**:\n{st.session_state.current_tool}")
 
     st.markdown("---")
-    st.markdown("#### 🚀 Quick Mission Switcher")
+    st.markdown("#### ⚡ Quick Tool Switcher")
+    tool_icons = {
+        FEATURE_JOINER: "📑 OmniMerge",
+        FEATURE_SPLITTER: "✂️ PageSlicer",
+        FEATURE_COMPRESSOR: "🗜️ OptiCompress",
+        FEATURE_LATEX: "📝 TeXPublish"
+    }
     for feat in ALL_FEATURES:
         is_cur = (st.session_state.current_tool == feat)
+        display_label = tool_icons.get(feat, feat)
         st.button(
-            f"{'🌟' if is_cur else '🛸'} {feat.split('(')[0].strip()}",
+            f"{'👉 ' if is_cur else ''}{display_label}",
             key=f"sidebar_btn_{feat[:10]}",
             type="primary" if is_cur else "secondary",
             use_container_width=True,
@@ -412,27 +419,27 @@ with st.sidebar:
         )
 
     st.markdown("---")
-    st.markdown("#### 📡 System Status")
+    st.markdown("#### 📊 Status")
     if st.session_state.current_tool == FEATURE_JOINER:
-        st.write(f"📁 Queue: **{len(st.session_state.joiner_queue)} document(s)**")
+        st.write(f"📁 Queue: **{len(st.session_state.joiner_queue)} file(s)**")
     elif st.session_state.current_tool == FEATURE_COMPRESSOR:
         status_c = "Cached" if st.session_state.compression_result else "Idle"
-        st.write(f"🗜️ Engine: **{status_c}**")
+        st.write(f"🗜️ Compressor: **{status_c}**")
     elif st.session_state.current_tool == FEATURE_LATEX:
         status_l = "Generated" if st.session_state.docx_file else "Idle"
         st.write(f"📝 DOCX: **{status_l}**")
     else:
-        st.write("✂️ Splitter: **Awaiting Source**")
+        st.write("✂️ Splitter: **Ready**")
 
     st.markdown("---")
-    if st.button("🧹 Reset All Space Caches", use_container_width=True):
+    if st.button("🧹 Clear All Session Caches", use_container_width=True):
         st.session_state.docx_file = None
         st.session_state.pdf_file = None
         st.session_state.compression_result = None
         st.session_state.joiner_queue = []
         st.session_state.joiner_seen_uids = set()
         st.session_state.joiner_result = None
-        st.success("Caches purged!")
+        st.success("Session reset!")
         st.rerun()
 
 st.markdown("---")
@@ -692,13 +699,13 @@ if st.session_state.current_tool == FEATURE_JOINER:
 
 
 # ==============================================================================
-# MISSION 2: ☄️ PDF PAGE SPLITTER & EXTRACTOR
+# TOOL 2: ✂️ PAGESLICER — PDF PAGE SPLITTER & EXTRACTOR
 # ==============================================================================
 
 elif st.session_state.current_tool == FEATURE_SPLITTER:
-    st.header("☄️ PDF Page Splitter & Orbital Extractor")
+    st.header("✂️ PageSlicer — PDF Page Splitter & Range Extractor")
     st.markdown(
-        "Upload any multi-page PDF document to explode it into single-page PDFs or extract a specific page interval."
+        "Upload any multi-page PDF document to divide it into single-page PDFs or extract a specific page interval."
     )
 
     uploaded_pdf = st.file_uploader(
@@ -720,17 +727,17 @@ elif st.session_state.current_tool == FEATURE_SPLITTER:
                 m2.metric("📄 Total Page Count", f"{total_pages} pages")
 
             operation = st.radio(
-                "Choose Splitting Trajectory:",
+                "Choose Splitting Action:",
                 ["Divide PDF into Single Pages", "Extract Specific Page Range (From Page X to Y)"],
                 horizontal=True
             )
 
             if operation == "Divide PDF into Single Pages":
-                st.subheader("1. Single Page Exploder")
+                st.subheader("1. Single Page Splitter")
                 st.write(f"This will split the **{total_pages}-page** PDF into **{total_pages} individual single-page PDF documents**.")
 
                 if st.button("✂️ Split PDF into Single Pages", type="primary", use_container_width=True):
-                    with st.spinner("Splitting orbital pages..."):
+                    with st.spinner("Splitting PDF pages..."):
                         split_res = split_pdf_to_single_pages(pdf_bytes, base_filename=pdf_name)
 
                     st.success(f"Successfully divided into {total_pages} single-page PDFs!")
@@ -812,13 +819,13 @@ elif st.session_state.current_tool == FEATURE_SPLITTER:
 
 
 # ==============================================================================
-# MISSION 3: 🕳️ UNIVERSAL FILE COMPRESSOR
+# TOOL 3: 🗜️ OPTICOMPRESS — UNIVERSAL FILE COMPRESSOR
 # ==============================================================================
 
 elif st.session_state.current_tool == FEATURE_COMPRESSOR:
-    st.header("🕳️ Universal File Compressor (Gravity Engine)")
+    st.header("🗜️ OptiCompress — Smart File Compressor")
     st.markdown(
-        "Compress **PDFs, Images (JPEG, PNG, WEBP, TIFF, BMP)**, or documents to any target mass (KB / MB) or visual fidelity level."
+        "Compress **PDFs, Images (JPEG, PNG, WEBP, TIFF, BMP)**, or documents to any target file size (KB / MB) or visual quality level."
     )
 
     uploaded_comp_file = st.file_uploader(
@@ -844,7 +851,7 @@ elif st.session_state.current_tool == FEATURE_COMPRESSOR:
                 st.metric("🏷️ Detected Format", file_ext if file_ext else "UNKNOWN")
 
         st.markdown("---")
-        st.subheader("⚙️ Gravity Compression Controls")
+        st.subheader("⚙️ Compression Settings & Controls")
 
         mode = st.radio(
             "Select Compression Strategy:",
@@ -1049,17 +1056,17 @@ elif st.session_state.current_tool == FEATURE_COMPRESSOR:
 
 
 # ==============================================================================
-# MISSION 4: 📜 LATEX SCRIBE STUDIO
+# TOOL 4: 📝 TEXPUBLISH — LATEX CONVERTER
 # ==============================================================================
 
 elif st.session_state.current_tool == FEATURE_LATEX:
-    st.header("📜 LaTeX to Document (DOCX & PDF)")
+    st.header("📝 TeXPublish — LaTeX to Document Converter (DOCX & PDF)")
     st.markdown(
-        "Transcribe LaTeX source code or `.tex` documents into editable Microsoft Word (`.docx`) files and export to publication-ready PDF."
+        "Convert LaTeX source code or `.tex` documents into editable Microsoft Word (`.docx`) files and export to publication-ready PDF."
     )
 
     input_method = st.radio(
-        "Choose Transcription Input:",
+        "Choose Input Method:",
         ["Paste Text", "Upload File"],
         horizontal=True
     )

@@ -1,6 +1,6 @@
-# Constellation Document & PDF Studio Pro 🌌
+# OmniDoc Studio Pro 📑
 
-A deep-space themed web application designed to **join multiple PDF documents**, **split & extract PDF page ranges**, **compress PDFs and images to exact target sizes or qualities**, and **convert LaTeX documents into editable Microsoft Word (`.docx`) and PDF formats**.
+A modern, professional web application designed to **join and synthesize multi-format documents and images**, **split & extract PDF page ranges**, **compress files to exact target sizes or qualities**, and **compile LaTeX documents into editable Microsoft Word (`.docx`) and publication-ready PDFs**.
 
 ---
 
@@ -8,18 +8,18 @@ A deep-space themed web application designed to **join multiple PDF documents**,
 
 Working with research papers, technical reports, multi-part documentation, and high-resolution scans often requires several disparate tools. 
 
-This suite provides a unified, constellation-themed web application powered by **Streamlit** and **pypdf**:
-1. **🌌 Multi-PDF File Joiner & Merger (Supernova)**: Select and combine two or more PDFs with interactive orbital reordering (⬆️ / ⬇️), page range calculation, and automatic table of contents bookmarking.
-2. **☄️ PDF Page Splitter & Extractor (Comet)**: Divide any multi-page PDF into single-page star PDFs (downloadable individually or as a `.zip` archive) or slice out specific page intervals ("From Page X to Page Y").
-3. **🕳️ Universal File Compressor (Gravity Engine)**: Intelligently shrink PDFs and images (JPEG, PNG, WEBP, TIFF, BMP) down to a precise target file size (KB / MB) or desired visual quality percentage.
-4. **📜 LaTeX to Word & PDF Conversion (Celestial Scribe)**: Convert `.tex` source code or uploaded files into editable Word documents (`.docx`) and publication-ready PDFs with syntax validation.
-5. **🛰️ Mission Control Dropdown & Constellation Hub**: Seamless tool switching with synchronized cards and dropdown control.
+**OmniDoc Studio Pro** provides a unified, modern web application powered by **Streamlit**, **pypdf**, **Pillow**, and **pypdfium2**:
+1. **📑 OmniMerge (Universal File Joiner & Synthesizer)**: Select and combine PDFs and images (JPG, PNG, WEBP, TIFF, BMP) in any sequence with custom reordering, page range calculation, and flexible export formats (PDF, PNG ZIP, JPEG ZIP, TIFF).
+2. **✂️ PageSlicer (PDF Page Splitter & Range Extractor)**: Divide any multi-page PDF into single-page PDFs (downloadable individually or as a `.zip` archive) or slice out specific page intervals ("From Page X to Page Y").
+3. **🗜️ OptiCompress (Universal File Compressor)**: Intelligently shrink PDFs and images (JPEG, PNG, WEBP, TIFF, BMP) down to a precise target file size (KB / MB) or desired visual quality percentage.
+4. **📝 TeXPublish (LaTeX to Word & PDF Converter)**: Convert `.tex` source code or uploaded files into editable Word documents (`.docx`) and publication-ready PDFs with syntax validation.
+5. **🧭 Feature Hub & Tool Selector Dropdown**: Seamless tool switching with synchronized cards and dropdown control.
 
 ---
 
 ## Key Features
 
-### 🌌 Multi-File Joiner & Universal Document Synthesizer (Enhanced!)
+### 📑 OmniMerge: Universal Multi-File Joiner & Synthesizer
 * **Universal File Support**: Upload and join **PDFs, JPEGs, PNGs, WEBPs, BMPs, and TIFFs** in any sequence.
 * **Incremental Batch Uploading**: Select one file, then click **➕ Add More Files** at any time to append additional documents without losing existing items.
 * **Flexible Extraction & Export Formats**:
@@ -28,7 +28,7 @@ This suite provides a unified, constellation-themed web application powered by *
   - 🖼️ **Optimized JPEG Package (`.zip`)**: Compressed JPEG images of all pages.
   - 📑 **Multi-Page TIFF (`.tiff`)**: Single unified multi-page TIFF file.
 * **Interactive Document Queue**: Inspect each file's format, page count or resolution, and size.
-* **Orbital Reordering**: Move files up (⬆️) or down (⬇️) or reverse order to set the exact merge sequence.
+* **Custom Reordering**: Move files up (⬆️) or down (⬇️) or reverse order to set the exact merge sequence.
 * **Page Breakdown Matrix**: Inspect the exact page interval of each document within the consolidated output.
 
 ### ✂️ PDF Page Splitting & Range Extraction Features
@@ -115,25 +115,24 @@ The application will open in your default browser at `http://localhost:8501`.
 ### 🧭 Feature Hub & Navigation
 * Use the top **Feature Cards Hub**, the segmented pill buttons, or the sidebar menu to view all features and switch to any tool instantly.
 
-### 1. 🔗 PDF Joiner & Merger
-1. Select **🔗 PDF Joiner & Merger**.
-2. Upload two or more PDF files via drag-and-drop or file browser.
+### 1. 📑 OmniMerge: Universal Multi-File Joiner
+1. Select **OmniMerge**.
+2. Upload PDFs or images (JPG, PNG, WEBP, TIFF, BMP). Use **➕ Add More Files** to append files incrementally.
 3. Review the file queue. Use **⬆️ Up** and **⬇️ Down** buttons to set the exact merge order.
-4. Specify an output filename and choose whether to add outline bookmarks.
-5. Click **🚀 Merge All PDFs Now**.
-6. Review the resulting page breakdown and click **⬇️ Download Merged PDF**.
+4. Select your target export format (**PDF**, **PNG ZIP**, **JPEG ZIP**, or **TIFF**).
+5. Click **🚀 Join & Extract Files Now** and download the consolidated output.
 
-### 2. ✂️ PDF Page Splitter & Extractor
+### 2. ✂️ PageSlicer: PDF Page Splitter & Range Extractor
 1. Upload a multi-page PDF document.
 2. Select **Divide PDF into Single Pages** to generate individual 1-page PDFs as a ZIP.
 3. Or select **Extract Specific Page Range** to extract pages from X to Y.
 
-### 3. 🗜️ Universal File Compressor
+### 3. 🗜️ OptiCompress: Universal File Compressor
 1. Upload any PDF or image file.
 2. Select **Target Quality (%)** or **Target File Size (KB / MB)**.
 3. Click **🗜️ Compress File Now** and inspect before/after metrics.
 
-### 4. 📝 LaTeX to Document Converter
+### 4. 📝 TeXPublish: LaTeX to Document Converter
 1. Select **Paste Text** or **Upload File** (`.tex`).
 2. Click **Generate DOCX** and optionally convert to PDF.
 
