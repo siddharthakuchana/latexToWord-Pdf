@@ -4,3 +4,8 @@ docx2pdf
 pypdf
 Pillow
 pypdfium2
+reportlab
+numpy
+gTTS
+matplotlib
+pytesseract
