@@ -13,7 +13,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, StreamingResponse
 
 from compressor import compress_file, format_size
-from converter import convert_latex_to_docx, convert_docx_to_pdf
+from converter import (
+    convert_latex_to_docx, convert_docx_to_pdf,
+    convert_pdf_to_docx, process_pdf_to_pdf, sanitize_filename
+)
 from validator import validate_latex
 from pdf_splitter import get_pdf_page_count, split_pdf_to_single_pages, extract_pdf_pages
 from pdf_joiner import get_file_info, merge_files, get_pdf_info
@@ -54,7 +57,7 @@ async def health():
     ocr_ready, ocr_msg = check_ocr_availability()
     return {
         "status": "ok",
-        "tools": 10,
+        "tools": 11,
         "gtts_available": GTTS_AVAILABLE,
         "matplotlib_available": MATPLOTLIB_AVAILABLE,
         "ocr_available": ocr_ready,
@@ -84,6 +87,8 @@ async def list_tools():
          "desc": "Transform PDFs into spoken audiobooks; listen live or download MP3s."},
         {"id": "compressor", "icon": "🗜️", "name": "OptiCompress", "tag": "OPTIMIZER", "tagColor": "amber",
          "desc": "Compress PDFs & images to exact target KB/MB or quality sliders."},
+        {"id": "docmorph", "icon": "🔄", "name": "OmniConvert", "tag": "PDF ⇄ WORD", "tagColor": "emerald",
+         "desc": "Convert PDF to Word (.docx), Word to PDF, or PDF to PDF with custom file renaming."},
         {"id": "latex", "icon": "📝", "name": "TeXPublish", "tag": "DOCX / MATH", "tagColor": "purple",
          "desc": "Convert LaTeX to Word & PDF, render math formulas, validate BibTeX."},
     ]
@@ -553,7 +558,8 @@ async def latex_validate(content: str = Form(...)):
 async def latex_convert(
     file: Optional[UploadFile] = File(None),
     content: Optional[str] = Form(None),
-    target_format: str = Form("docx")
+    target_format: str = Form("docx"),
+    output_filename: str = Form("converted_document")
 ):
     try:
         raw_tex = ""
@@ -567,6 +573,7 @@ async def latex_convert(
 
         docx_path = convert_latex_to_docx(raw_tex)
         if target_format.lower() == "pdf":
+            out_name = sanitize_filename(output_filename, default_name="converted_document", target_ext="pdf")
             try:
                 pdf_path = convert_docx_to_pdf(docx_path)
                 with open(pdf_path, "rb") as f:
@@ -574,26 +581,143 @@ async def latex_convert(
                 return StreamingResponse(
                     io.BytesIO(data),
                     media_type="application/pdf",
-                    headers={"Content-Disposition": 'attachment; filename="converted.pdf"'}
+                    headers={"Content-Disposition": f'attachment; filename="{out_name}"'}
                 )
             except Exception:
+                out_docx_name = sanitize_filename(output_filename, default_name="converted_document", target_ext="docx")
                 with open(docx_path, "rb") as f:
                     data = f.read()
                 return StreamingResponse(
                     io.BytesIO(data),
                     media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                    headers={"Content-Disposition": 'attachment; filename="converted.docx"'}
+                    headers={"Content-Disposition": f'attachment; filename="{out_docx_name}"'}
                 )
         else:
+            out_name = sanitize_filename(output_filename, default_name="converted_document", target_ext="docx")
             with open(docx_path, "rb") as f:
                 data = f.read()
             return StreamingResponse(
                 io.BytesIO(data),
                 media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                headers={"Content-Disposition": 'attachment; filename="converted.docx"'}
+                headers={"Content-Disposition": f'attachment; filename="{out_name}"'}
             )
     except Exception as e:
         raise HTTPException(400, str(e))
+
+
+# ---------------------------------------------------------------------------
+# TOOL 11: UNIVERSAL DOCUMENT CONVERTER & RENAMER (OMNICONVERT)
+# ---------------------------------------------------------------------------
+
+@app.post("/api/convert/pdf-to-docx")
+async def api_convert_pdf_to_docx(
+    file: UploadFile = File(...),
+    output_filename: str = Form("converted_document")
+):
+    """Convert an uploaded PDF into an editable Word DOCX file with custom renaming."""
+    try:
+        content = await file.read()
+        if not content:
+            raise HTTPException(400, "Uploaded PDF file is empty.")
+        
+        fallback_base = os.path.splitext(file.filename or "converted_document")[0]
+        out_name = sanitize_filename(output_filename, default_name=f"{fallback_base}_converted", target_ext="docx")
+        
+        docx_path = convert_pdf_to_docx(content)
+        with open(docx_path, "rb") as f:
+            data = f.read()
+
+        try:
+            os.remove(docx_path)
+        except Exception:
+            pass
+
+        return StreamingResponse(
+            io.BytesIO(data),
+            media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            headers={"Content-Disposition": f'attachment; filename="{out_name}"'}
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(400, f"PDF to Word conversion failed: {str(e)}")
+
+
+@app.post("/api/convert/docx-to-pdf")
+async def api_convert_docx_to_pdf(
+    file: UploadFile = File(...),
+    output_filename: str = Form("converted_document")
+):
+    """Convert an uploaded Word DOCX into a PDF file with custom renaming."""
+    try:
+        content = await file.read()
+        if not content:
+            raise HTTPException(400, "Uploaded Word DOCX file is empty.")
+
+        temp_docx = tempfile.NamedTemporaryFile(suffix=".docx", delete=False)
+        temp_docx.write(content)
+        temp_docx.close()
+
+        fallback_base = os.path.splitext(file.filename or "converted_document")[0]
+        out_name = sanitize_filename(output_filename, default_name=f"{fallback_base}_converted", target_ext="pdf")
+
+        pdf_path = convert_docx_to_pdf(temp_docx.name)
+        with open(pdf_path, "rb") as f:
+            data = f.read()
+
+        try:
+            os.remove(temp_docx.name)
+            if os.path.exists(pdf_path):
+                os.remove(pdf_path)
+        except Exception:
+            pass
+
+        return StreamingResponse(
+            io.BytesIO(data),
+            media_type="application/pdf",
+            headers={"Content-Disposition": f'attachment; filename="{out_name}"'}
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(400, f"Word to PDF conversion failed: {str(e)}")
+
+
+@app.post("/api/convert/pdf-to-pdf")
+async def api_convert_pdf_to_pdf(
+    file: UploadFile = File(...),
+    mode: str = Form("clean_flatten"),
+    output_filename: str = Form("processed_document")
+):
+    """Re-process a PDF (clean, flatten annotations/forms, optimize) and rename cleanly."""
+    try:
+        content = await file.read()
+        if not content:
+            raise HTTPException(400, "Uploaded PDF file is empty.")
+
+        fallback_base = os.path.splitext(file.filename or "processed_document")[0]
+        out_name = sanitize_filename(output_filename, default_name=f"{fallback_base}_clean", target_ext="pdf")
+
+        pdf_path = process_pdf_to_pdf(content, mode=mode)
+        with open(pdf_path, "rb") as f:
+            data = f.read()
+
+        try:
+            if os.path.exists(pdf_path):
+                os.remove(pdf_path)
+        except Exception:
+            pass
+
+        return StreamingResponse(
+            io.BytesIO(data),
+            media_type="application/pdf",
+            headers={"Content-Disposition": f'attachment; filename="{out_name}"'}
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(400, f"PDF to PDF re-processing failed: {str(e)}")
+
 
 
 if __name__ == "__main__":
