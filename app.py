@@ -4,7 +4,10 @@ import streamlit as st
 
 from converter import (
     convert_latex_to_docx,
-    convert_docx_to_pdf
+    convert_docx_to_pdf,
+    convert_pdf_to_docx,
+    process_pdf_to_pdf,
+    sanitize_filename
 )
 from validator import validate_latex
 from pdf_splitter import (
@@ -79,6 +82,7 @@ FEATURE_DIFF = "⚖️ DiffVision (Visual PDF Comparator)"
 FEATURE_EXTRACTOR = "🔍 TextScope (OCR & Text Extraction)"
 FEATURE_AUDIO = "🎧 AudioDoc (PDF Voice & Narration Reader)"
 FEATURE_COMPRESSOR = "🗜️ Smart File Compressor (Size & Quality)"
+FEATURE_DOCMORPH = "🔄 OmniConvert (PDF ⇄ Word & PDF Renamer)"
 FEATURE_LATEX = "📝 TeXPublish (LaTeX Documents & Math Studio)"
 
 ALL_FEATURES = [
@@ -91,6 +95,7 @@ ALL_FEATURES = [
     FEATURE_EXTRACTOR,
     FEATURE_AUDIO,
     FEATURE_COMPRESSOR,
+    FEATURE_DOCMORPH,
     FEATURE_LATEX
 ]
 
@@ -493,6 +498,24 @@ with r3_c3:
     """, unsafe_allow_html=True)
     st.button("✅ Active" if is_act else "👉 TeXPublish", key="btn_hub_latex", type="primary" if is_act else "secondary", use_container_width=True, on_click=set_active_tool, args=(FEATURE_LATEX,))
 
+# Row 4: Format Transformation & Renaming
+st.markdown("##### 🔄 Format Transformation & Renaming")
+r4_c1, r4_c2, r4_c3 = st.columns(3)
+with r4_c1:
+    is_act = (st.session_state.current_tool == FEATURE_DOCMORPH)
+    card_cls = "constellation-card orbiting" if is_act else "constellation-card"
+    st.markdown(f"""
+    <div class="{card_cls}">
+        <span class="cosmic-badge badge-scribe">PDF ⇄ WORD</span>
+        <h4 style="margin: 4px 0 6px 0; color: #f8fafc;">🔄 OmniConvert</h4>
+        <p style="font-size: 0.83rem; color: #94a3b8; margin: 0 0 10px 0; min-height: 44px;">
+            Convert PDF to Word (.docx), Word to PDF, or PDF to PDF with custom real-time file renaming.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+    st.button("✅ Active" if is_act else "👉 OmniConvert", key="btn_hub_docmorph", type="primary" if is_act else "secondary", use_container_width=True, on_click=set_active_tool, args=(FEATURE_DOCMORPH,))
+
+
 
 # ==============================================================================
 # TOOL SELECTOR DROPDOWN
@@ -540,6 +563,7 @@ with st.sidebar:
         FEATURE_EXTRACTOR: "🔍 TextScope",
         FEATURE_AUDIO: "🎧 AudioDoc",
         FEATURE_COMPRESSOR: "🗜️ OptiCompress",
+        FEATURE_DOCMORPH: "🔄 OmniConvert",
         FEATURE_LATEX: "📝 TeXPublish"
     }
     for feat in ALL_FEATURES:
@@ -1945,3 +1969,136 @@ elif st.session_state.current_tool == FEATURE_LATEX:
 
                 st.markdown("##### Beautified BibTeX Code")
                 st.code(bib_res["beautified"], language="bibtex")
+
+
+# ==============================================================================
+# TOOL 11: 🔄 OMNICONVERT (UNIVERSAL PDF ⇄ WORD & PDF RENAMER)
+# ==============================================================================
+
+if st.session_state.current_tool == FEATURE_DOCMORPH:
+    st.header("🔄 OmniConvert: Universal Document Converter & Renamer")
+    st.markdown(
+        "Convert **PDF documents to editable Microsoft Word (`.docx`)**, **Word documents to PDF**, "
+        "or **re-process & sanitize PDFs** with real-time **custom file renaming**."
+    )
+
+    conv_mode = st.radio(
+        "Select Conversion Mode:",
+        ["📄 PDF ➔ Word (.docx)", "📝 Word (.docx) ➔ PDF (Vice Versa)", "🛡️ Same PDF ➔ PDF (Sanitize & Standardize)"],
+        horizontal=True
+    )
+
+    with st.container(border=True):
+        if conv_mode == "📄 PDF ➔ Word (.docx)":
+            target_ext = "docx"
+            uploaded_file = st.file_uploader(
+                "Upload PDF Document to Convert to Word (.docx):",
+                type=["pdf"],
+                key="conv_pdf_to_word_uploader"
+            )
+        elif conv_mode == "📝 Word (.docx) ➔ PDF (Vice Versa)":
+            target_ext = "pdf"
+            uploaded_file = st.file_uploader(
+                "Upload Microsoft Word Document to Convert to PDF:",
+                type=["docx", "doc"],
+                key="conv_word_to_pdf_uploader"
+            )
+        else:
+            target_ext = "pdf"
+            uploaded_file = st.file_uploader(
+                "Upload PDF Document to Re-process / Standardize:",
+                type=["pdf"],
+                key="conv_pdf_to_pdf_uploader"
+            )
+            pdf_process_mode = st.selectbox(
+                "PDF Standardization Mode:",
+                [
+                    ("clean_flatten", "🛡️ Clean Syntax & Flatten Forms (Recommended)"),
+                    ("optimize", "⚡ Optimize & Compress Internal Streams"),
+                    ("flatten", "📄 Flatten Annotations & Form Fields Only")
+                ],
+                format_func=lambda x: x[1]
+            )[0]
+
+        if uploaded_file:
+            orig_base = os.path.splitext(uploaded_file.name)[0]
+            st.markdown("---")
+            st.markdown("#### ✏️ Custom Output File Name")
+            st.caption("Rename the output file as desired. The system automatically preserves the correct extension.")
+
+            default_name = f"{orig_base}_converted" if "Same" not in conv_mode else f"{orig_base}_clean"
+            col_rename, col_ext = st.columns([4, 1])
+            with col_rename:
+                user_rename = st.text_input(
+                    "Output File Name:",
+                    value=default_name,
+                    key="conv_rename_input"
+                )
+            with col_ext:
+                st.markdown(f"<div style='margin-top: 30px; font-weight: bold; color: #10b981;'>.{target_ext}</div>", unsafe_allow_html=True)
+
+            effective_name = sanitize_filename(user_rename, default_name=default_name, target_ext=target_ext)
+            st.info(f"💾 File will download as: **`{effective_name}`**")
+
+            if st.button("🚀 Process & Convert Document", type="primary", use_container_width=True):
+                try:
+                    with st.spinner("Processing document conversion..."):
+                        file_bytes = uploaded_file.getvalue()
+                        if conv_mode == "📄 PDF ➔ Word (.docx)":
+                            docx_path = convert_pdf_to_docx(file_bytes)
+                            with open(docx_path, "rb") as f:
+                                result_bytes = f.read()
+                            try:
+                                os.remove(docx_path)
+                            except Exception:
+                                pass
+                            mime_type = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                        elif conv_mode == "📝 Word (.docx) ➔ PDF (Vice Versa)":
+                            import tempfile
+                            temp_in = tempfile.NamedTemporaryFile(suffix=".docx", delete=False)
+                            temp_in.write(file_bytes)
+                            temp_in.close()
+                            pdf_path = convert_docx_to_pdf(temp_in.name)
+                            with open(pdf_path, "rb") as f:
+                                result_bytes = f.read()
+                            try:
+                                os.remove(temp_in.name)
+                                if os.path.exists(pdf_path):
+                                    os.remove(pdf_path)
+                            except Exception:
+                                pass
+                            mime_type = "application/pdf"
+                        else:
+                            pdf_path = process_pdf_to_pdf(file_bytes, mode=pdf_process_mode)
+                            with open(pdf_path, "rb") as f:
+                                result_bytes = f.read()
+                            try:
+                                if os.path.exists(pdf_path):
+                                    os.remove(pdf_path)
+                            except Exception:
+                                pass
+                            mime_type = "application/pdf"
+
+                        st.session_state.omni_conv_result = {
+                            "data": result_bytes,
+                            "filename": effective_name,
+                            "mime": mime_type
+                        }
+                        st.success(f"Conversion successful! File generated as **{effective_name}**.")
+                except Exception as e:
+                    st.error(f"Conversion failed: {e}")
+
+        if "omni_conv_result" in st.session_state and st.session_state.omni_conv_result:
+            res = st.session_state.omni_conv_result
+            st.markdown("---")
+            with st.container(border=True):
+                st.subheader("📥 Download Converted Document")
+                st.write(f"**Filename:** `{res['filename']}` | **Size:** {len(res['data']) / 1024:.1f} KB")
+                st.download_button(
+                    label=f"⬇️ Download {res['filename']}",
+                    data=res["data"],
+                    file_name=res["filename"],
+                    mime=res["mime"],
+                    type="primary",
+                    use_container_width=True
+                )
