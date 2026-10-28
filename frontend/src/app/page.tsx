@@ -17,6 +17,7 @@ const TOOLS: CarouselItem[] = [
   { id: 'extractor', icon: '🔍', name: 'TextScope', tag: 'TEXT / OCR', tagColor: 'emerald', desc: 'Extract digital text or run OCR on scanned documents; export Markdown & TXT.' },
   { id: 'audio', icon: '🎧', name: 'AudioDoc', tag: 'VOICE-AI', tagColor: 'violet', desc: 'Transform PDFs into spoken audiobooks; listen live or download MP3s.' },
   { id: 'compressor', icon: '🗜️', name: 'OptiCompress', tag: 'OPTIMIZER', tagColor: 'amber', desc: 'Compress PDFs & images to exact target KB/MB or quality sliders.' },
+  { id: 'docmorph', icon: '🔄', name: 'OmniConvert', tag: 'PDF ⇄ WORD', tagColor: 'emerald', desc: 'Convert PDF to Word (.docx), Word to PDF, or PDF to PDF with custom file renaming.' },
   { id: 'latex', icon: '📝', name: 'TeXPublish', tag: 'DOCX / MATH', tagColor: 'purple', desc: 'Convert LaTeX to Word & PDF, render math formulas, validate BibTeX.' },
 ];
 
@@ -58,7 +59,7 @@ export default function Home() {
                 PRO 2.0
               </span>
             </div>
-            <p className="text-[11px] text-zinc-400 hidden sm:block">10-in-1 Document & PDF Power Suite</p>
+            <p className="text-[11px] text-zinc-400 hidden sm:block">11-in-1 Document & PDF Power Suite</p>
           </div>
         </div>
 
