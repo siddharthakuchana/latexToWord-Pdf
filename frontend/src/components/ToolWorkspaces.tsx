@@ -49,6 +49,7 @@ export default function ToolWorkspace({ toolId }: ToolWorkspaceProps) {
       {toolId === 'extractor' && <ExtractorWorkspace setLoading={setLoading} loading={loading} setError={setError} setSuccess={setSuccessMsg} />}
       {toolId === 'audio' && <AudioWorkspace setLoading={setLoading} loading={loading} setError={setError} setSuccess={setSuccessMsg} />}
       {toolId === 'compressor' && <CompressorWorkspace setLoading={setLoading} loading={loading} setError={setError} setSuccess={setSuccessMsg} />}
+      {toolId === 'docmorph' && <DocMorphWorkspace setLoading={setLoading} loading={loading} setError={setError} setSuccess={setSuccessMsg} />}
       {toolId === 'latex' && <LatexWorkspace setLoading={setLoading} loading={loading} setError={setError} setSuccess={setSuccessMsg} />}
     </div>
   );
@@ -1376,6 +1377,298 @@ function LatexWorkspace({ setLoading, loading, setError, setSuccess }: any) {
               {bibResult.citation_key && <p>Key: {bibResult.citation_key}</p>}
             </div>
           )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// 11. OMNICONVERT (UNIVERSAL CONVERTER & RENAMER)
+// ---------------------------------------------------------------------------
+function DocMorphWorkspace({ setLoading, loading, setError, setSuccess }: any) {
+  const [mode, setMode] = useState<'pdf2word' | 'word2pdf' | 'pdf2pdf'>('pdf2word');
+  const [file, setFile] = useState<File | null>(null);
+  const [customFilename, setCustomFilename] = useState<string>('');
+  const [pdfMode, setPdfMode] = useState<string>('clean_flatten');
+  const [lastConverted, setLastConverted] = useState<{ name: string; url: string; ext: string } | null>(null);
+
+  // Auto-populate rename field when file is uploaded or mode changes
+  useEffect(() => {
+    if (file) {
+      const base = file.name.replace(/\.[^/.]+$/, '');
+      if (mode === 'pdf2word') setCustomFilename(`${base}_converted`);
+      else if (mode === 'word2pdf') setCustomFilename(`${base}_converted`);
+      else setCustomFilename(`${base}_clean`);
+    } else {
+      setCustomFilename('');
+    }
+  }, [file, mode]);
+
+  const switchMode = (newMode: 'pdf2word' | 'word2pdf' | 'pdf2pdf') => {
+    setMode(newMode);
+    setFile(null);
+    setLastConverted(null);
+  };
+
+  const targetExt = mode === 'pdf2word' ? 'docx' : 'pdf';
+  const effectiveFilename = (customFilename.trim() ? customFilename.trim().replace(/\.[^/.]+$/, '') : 'document') + '.' + targetExt;
+
+  const handleConvert = async () => {
+    if (!file) {
+      setError('Please select a file to convert.');
+      return;
+    }
+    setLoading(true);
+    setError(null);
+    try {
+      let endpoint = '';
+      const extra: Record<string, string> = {
+        output_filename: customFilename.trim() || file.name.replace(/\.[^/.]+$/, ''),
+      };
+
+      if (mode === 'pdf2word') {
+        endpoint = '/api/convert/pdf-to-docx';
+      } else if (mode === 'word2pdf') {
+        endpoint = '/api/convert/docx-to-pdf';
+      } else {
+        endpoint = '/api/convert/pdf-to-pdf';
+        extra.mode = pdfMode;
+      }
+
+      const res = await uploadFile(endpoint, file, extra);
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({ detail: 'Conversion failed' }));
+        throw new Error(errData.detail || 'Conversion failed');
+      }
+
+      const blob = await res.blob();
+      const disposition = res.headers.get('Content-Disposition');
+      let outName = effectiveFilename;
+      if (disposition) {
+        const match = disposition.match(/filename="?([^"]+)"?/);
+        if (match) outName = match[1];
+      }
+
+      const downloadUrl = URL.createObjectURL(blob);
+      setLastConverted({
+        name: outName,
+        url: downloadUrl,
+        ext: targetExt,
+      });
+
+      // Automatically trigger download
+      const a = document.createElement('a');
+      a.href = downloadUrl;
+      a.download = outName;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+
+      setSuccess(`File processed successfully and saved as "${outName}"!`);
+    } catch (err: any) {
+      setError(err.message || 'Conversion encountered an error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="border-b border-white/10 pb-4">
+        <h3 className="text-xl font-bold text-white flex items-center gap-2">
+          🔄 OmniConvert
+          <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+            PDF ⇄ WORD & RENAMER
+          </span>
+        </h3>
+        <p className="text-xs text-zinc-400 mt-1">
+          Seamlessly convert PDF documents to editable Microsoft Word (.docx), Word documents to PDF, or re-process & sanitize PDFs with custom file renaming.
+        </p>
+      </div>
+
+      {/* Mode Selector Tabs */}
+      <div className="flex flex-wrap gap-2 p-1.5 bg-black/40 border border-white/10 rounded-2xl">
+        <button
+          onClick={() => switchMode('pdf2word')}
+          className={`flex-1 min-w-[140px] py-2.5 px-4 rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-2 ${
+            mode === 'pdf2word'
+              ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-lg shadow-emerald-900/30'
+              : 'text-zinc-400 hover:text-white hover:bg-white/5'
+          }`}
+        >
+          📄 PDF ➔ Word (.docx)
+        </button>
+        <button
+          onClick={() => switchMode('word2pdf')}
+          className={`flex-1 min-w-[140px] py-2.5 px-4 rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-2 ${
+            mode === 'word2pdf'
+              ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-900/30'
+              : 'text-zinc-400 hover:text-white hover:bg-white/5'
+          }`}
+        >
+          📝 Word (.docx) ➔ PDF
+        </button>
+        <button
+          onClick={() => switchMode('pdf2pdf')}
+          className={`flex-1 min-w-[140px] py-2.5 px-4 rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-2 ${
+            mode === 'pdf2pdf'
+              ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg shadow-purple-900/30'
+              : 'text-zinc-400 hover:text-white hover:bg-white/5'
+          }`}
+        >
+          🛡️ Same PDF ➔ PDF
+        </button>
+      </div>
+
+      {/* Upload Zone */}
+      <div className="space-y-3">
+        <label className="text-xs font-semibold text-zinc-300 flex items-center justify-between">
+          <span>
+            {mode === 'pdf2word' && 'Select PDF Document to Convert:'}
+            {mode === 'word2pdf' && 'Select Microsoft Word (.docx) Document to Convert:'}
+            {mode === 'pdf2pdf' && 'Select PDF Document to Re-Process / Standardize:'}
+          </span>
+          {file && (
+            <span className="text-zinc-500 text-[11px]">
+              {(file.size / 1024).toFixed(1)} KB
+            </span>
+          )}
+        </label>
+        <FileDropZone
+          accept={mode === 'word2pdf' ? '.docx,.doc' : '.pdf'}
+          onFiles={(files: File[]) => {
+            if (files.length > 0) setFile(files[0]);
+          }}
+          label={
+            mode === 'word2pdf'
+              ? 'Drop a Word .docx document here, or click to browse'
+              : 'Drop a PDF document here, or click to browse'
+          }
+        />
+        {file && (
+          <div className="p-3 bg-white/[0.04] border border-white/10 rounded-xl flex items-center justify-between text-xs">
+            <div className="flex items-center gap-2 text-zinc-200 truncate">
+              <span>{mode === 'word2pdf' ? '📝' : '📄'}</span>
+              <span className="font-medium truncate">{file.name}</span>
+            </div>
+            <button
+              onClick={() => setFile(null)}
+              className="text-zinc-500 hover:text-red-400 ml-2"
+            >
+              ✕ Remove
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* PDF to PDF Options */}
+      {mode === 'pdf2pdf' && (
+        <div className="p-4 bg-purple-950/20 border border-purple-500/20 rounded-2xl space-y-3">
+          <label className="text-xs font-semibold text-purple-300 block">PDF Standardization Mode</label>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            {[
+              { id: 'clean_flatten', label: '🛡️ Clean & Flatten', desc: 'Sanitizes syntax & flattens form fields' },
+              { id: 'optimize', label: '⚡ Optimize Streams', desc: 'Compresses internal PDF data streams' },
+              { id: 'flatten', label: '📄 Flatten Annotations', desc: 'Locks stamps & comments to page' },
+            ].map((opt) => (
+              <button
+                key={opt.id}
+                type="button"
+                onClick={() => setPdfMode(opt.id)}
+                className={`p-3 rounded-xl border text-left transition-all ${
+                  pdfMode === opt.id
+                    ? 'bg-purple-600/30 border-purple-400 text-white shadow-md shadow-purple-950/50'
+                    : 'bg-black/30 border-white/5 text-zinc-400 hover:border-white/20'
+                }`}
+              >
+                <p className="text-xs font-semibold">{opt.label}</p>
+                <p className="text-[10px] text-zinc-400 mt-1">{opt.desc}</p>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Custom File Rename Box */}
+      <div className="p-4 bg-zinc-900/60 border border-white/10 rounded-2xl space-y-3">
+        <div className="flex items-center justify-between">
+          <label className="text-xs font-semibold text-zinc-200 flex items-center gap-1.5">
+            ✏️ Custom Output File Name
+            <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30">
+              RENAME FEATURE
+            </span>
+          </label>
+          <span className="text-[11px] text-zinc-400">
+            Target extension: <span className="font-mono text-emerald-400 font-bold">.{targetExt}</span>
+          </span>
+        </div>
+
+        <div className="relative flex items-center">
+          <input
+            type="text"
+            value={customFilename}
+            onChange={(e) => setCustomFilename(e.target.value)}
+            placeholder={file ? file.name.replace(/\.[^/.]+$/, '') : 'Enter custom filename...'}
+            className="w-full bg-zinc-950/80 border border-white/15 focus:border-purple-400 rounded-xl px-4 py-2.5 text-xs text-white placeholder-zinc-500 focus:outline-none transition-all pr-20 font-mono"
+          />
+          <span className="absolute right-3 text-xs font-mono font-bold text-zinc-400 bg-white/5 px-2 py-1 rounded">
+            .{targetExt}
+          </span>
+        </div>
+
+        {/* Live File Preview Badge */}
+        <div className="flex items-center gap-2 text-[11px] text-zinc-400 bg-black/30 p-2.5 rounded-xl border border-white/5">
+          <span className="text-zinc-500">Preview:</span>
+          <span className="font-mono text-white font-medium bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded">
+            {effectiveFilename}
+          </span>
+          <span className="text-zinc-500 text-[10px] ml-auto">
+            Will automatically download with this exact name
+          </span>
+        </div>
+      </div>
+
+      {/* Action Button */}
+      <button
+        onClick={handleConvert}
+        disabled={loading || !file}
+        className={`w-full py-3.5 rounded-xl font-medium text-white transition-all shadow-lg flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed ${
+          mode === 'pdf2word'
+            ? 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 shadow-emerald-950/40'
+            : mode === 'word2pdf'
+            ? 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 shadow-blue-950/40'
+            : 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 shadow-purple-950/40'
+        }`}
+      >
+        {loading ? (
+          <Spinner />
+        ) : mode === 'pdf2word' ? (
+          '🚀 Convert PDF to Word (.docx)'
+        ) : mode === 'word2pdf' ? (
+          '📄 Convert Word to PDF (.pdf)'
+        ) : (
+          '🛡️ Re-process & Save PDF'
+        )}
+      </button>
+
+      {/* Download Result Card */}
+      {lastConverted && (
+        <div className="p-4 rounded-2xl bg-emerald-950/20 border border-emerald-500/30 flex items-center justify-between gap-4">
+          <div className="space-y-1 truncate">
+            <p className="text-xs font-semibold text-emerald-300 flex items-center gap-1.5">
+              <span>✅</span> File Ready for Download
+            </p>
+            <p className="font-mono text-xs text-white truncate">{lastConverted.name}</p>
+          </div>
+          <a
+            href={lastConverted.url}
+            download={lastConverted.name}
+            className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-medium shrink-0 transition-all flex items-center gap-1.5 shadow-md shadow-emerald-900/40"
+          >
+            ⬇️ Download Again
+          </a>
         </div>
       )}
     </div>
