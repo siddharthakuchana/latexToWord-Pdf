@@ -1,10 +1,10 @@
 # OmniDoc Studio Pro 📑⚡
 
-A modern, professional 10-in-1 document and PDF power suite designed to **synthesize multi-format documents**, **split & slice page ranges**, **rotate & reorganize pages**, **encrypt & watermark**, **render high-resolution images**, **compare visual diffs**, **extract text & OCR**, **generate audiobooks**, **compress files to exact target sizes**, and **compile LaTeX documents into editable Microsoft Word (`.docx`) and publication-ready PDFs**.
+A modern, professional 11-in-1 document and PDF power suite designed to **synthesize multi-format documents**, **convert PDF to Word (.docx) & vice versa with file renaming**, **split & slice page ranges**, **rotate & reorganize pages**, **encrypt & watermark**, **render high-resolution images**, **compare visual diffs**, **extract text & OCR**, **generate audiobooks**, **compress files to exact target sizes**, and **compile LaTeX documents into editable Microsoft Word (`.docx`) and publication-ready PDFs**.
 
 ---
 
-## 🧭 The 10-Tool Power Suite
+## 🧭 The 11-Tool Power Suite
 
 | Tool | Codename | Purpose | Supported Formats |
 | :--- | :--- | :--- | :--- |
@@ -17,7 +17,8 @@ A modern, professional 10-in-1 document and PDF power suite designed to **synthe
 | 7. **OCR & Text Extraction** | 🔍 **TextScope** | Extract digital text or run OCR on scanned pages with reading telemetry; export to Markdown & TXT | PDF → MD, TXT |
 | 8. **Audiobook Voice Reader** | 🎧 **AudioDoc** | Synthesize natural voice audiobooks from PDF text with multiple accents and speeds | PDF → MP3 |
 | 9. **Smart File Compressor** | 🗜️ **OptiCompress** | Compress PDFs and images to exact target KB/MB sizes or visual quality sliders | PDF, JPEG, PNG, WEBP, TIFF, BMP |
-| 10. **LaTeX & Math Studio** | 📝 **TeXPublish** | Compile LaTeX to Word & PDF, render math formulas to 300 DPI PNG, and validate BibTeX | `.tex` / text → DOCX, PDF, PNG |
+| 10. **Universal Document Converter** | 🔄 **OmniConvert** | Convert PDF to Word (.docx), Word to PDF (vice versa), or same PDF to PDF with custom real-time file renaming | PDF ⇄ DOCX, PDF → PDF |
+| 11. **LaTeX & Math Studio** | 📝 **TeXPublish** | Compile LaTeX to Word & PDF, render math formulas to 300 DPI PNG, and validate BibTeX | `.tex` / text → DOCX, PDF, PNG |
 
 ---
 
