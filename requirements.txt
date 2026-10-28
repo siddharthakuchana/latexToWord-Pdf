@@ -1,6 +1,8 @@
 streamlit
 pypandoc
 docx2pdf
+python-docx
+pdf2docx
 pypdf
 Pillow
 pypdfium2
